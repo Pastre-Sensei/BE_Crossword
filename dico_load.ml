@@ -24,7 +24,7 @@ let open_file = fun file ->
     raise exc;;
 
 let gen_tableau = fun taille_max ->
-  Array.make taille_max [];;
+  ref Array.make taille_max [];;
 
 
 let read_file = fun channel tableau ->
@@ -32,10 +32,11 @@ let read_file = fun channel tableau ->
     let l = input_line channel in
     try
       let length = String.length l in
-      tableau(
+      add_nlist l tableau(length);
+      tableau
 
     with End_of_file ->
       close_in channel;
-      failwith "Fin du document";;
+      tableau
 
-
+let b = 3;;
