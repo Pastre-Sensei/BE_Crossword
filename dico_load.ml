@@ -56,14 +56,17 @@ let print_tableau = fun tableau ->
     Printf.printf "Nouvelle liste : mot de taille %d\n" i;
     Printf.printf "%d %d\n" (List.length tableau.(i).liste) tableau.(i).taille;
   done;;
+
+let printf_nlist = fun nlist ->
+  Printf.printf "nlist de taille %d\n" nlist.taille;
+  List.iter (fun x -> Printf.printf "%s\n" x) nlist.liste;;
       
 let main = fun () ->
   let channel = open_file file in
   let tableau1 = gen_tableau 8 in
   read_file channel tableau1 8;
-  Printf.printf "%d\n" tableau1.(4).taille;
   Printf.printf "Fini\n";
-  print_tableau tableau1;;
-
+  print_tableau tableau1;
+  printf_nlist tableau1.(5);;
 main ();;
   
