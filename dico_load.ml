@@ -11,11 +11,7 @@ exception Empty
 let empty = {taille=0; liste = []};;
 
 let add_nlist = fun chaine nliste ->
-  (* {taille = nliste.taille + 1; liste = chaine :: nliste.liste};; *)
-  begin
-    nliste.taille <- nliste.taille +1;
-    nliste.liste <- chaine::nliste.liste;
-  end
+   {taille = nliste.taille + 1; liste = chaine :: nliste.liste};;
 
 let take_nlist = fun  nliste ->
   match nliste.liste with
@@ -37,7 +33,7 @@ let close_file = fun channel ->
     raise exc;;
 
 let gen_tableau = fun taille_max ->
-  let tableau = ref (Array.init (taille_max+1) (fun _ -> empty)) in
+  let tableau = (Array.init (taille_max+1) (fun i -> empty)) in
   tableau;;
 
 
@@ -48,22 +44,26 @@ let read_file = fun channel tableau taille_max ->
         let l = input_line channel in
         let length = String.length l in
         if length <= taille_max then begin
-        (* tableau.(length) <- add_nlist l tableau.(length); *)
-          add_nlist l !tableau.(length);
-          Printf.printf "%s %d\n" l length;
+          Array.set tableau length (add_nlist l tableau.(length));
           if length = 4 then begin incr compteur; Printf.printf "%d\n" !compteur end;
         end;
         encore ()
       end in
     try encore () with End_of_file -> close_file channel;;
 
-
+let print_tableau = fun tableau ->
+  for i=0 to (Array.length tableau)-1 do
+    Printf.printf "Nouvelle liste : mot de taille %d\n" i;
+    Printf.printf "%d %d\n" (List.length tableau.(i).liste) tableau.(i).taille;
+  done;;
+      
 let main = fun () ->
   let channel = open_file file in
   let tableau1 = gen_tableau 8 in
   read_file channel tableau1 8;
-  Printf.printf "%d\n" !tableau1.(4).taille;
-  Printf.printf "Fini\n";;
+  Printf.printf "%d\n" tableau1.(4).taille;
+  Printf.printf "Fini\n";
+  print_tableau tableau1;;
 
 main ();;
   
