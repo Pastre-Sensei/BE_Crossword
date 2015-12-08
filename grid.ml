@@ -15,15 +15,20 @@ let fic_ouvre_toi = fun file_path ->
 
 let ligne = 10;;
 let colonne = 10;;
+let min_word  = ref max_int;;
+let max_word  = ref 0;;
 
 let remplir_matrice = fun file_path matrice ->
+  let var = ref ' ' in
   let file = fic_ouvre_toi file_path in
-  for i = 0 to ligne - 1 do
-    for j = 0 to colonne - 1 do
-      matrice.(i).(j) <- input_char file;
-      Printf.printf "%c"matrice.(i).(j)
-    done;
-    Printf.printf"\n"
+  for i = 0 to ligne - 1  do
+    for j = 0 to colonne  do
+      begin
+        var := input_char file;
+        if (!var)!='\n' then
+          matrice.(i).(j) <- (!var)
+      end
+    done
   done;;
 
 let tab_words = fun matrice ->
@@ -89,14 +94,20 @@ let tab_words = fun matrice ->
     match !liste_mots with
       [] -> words_table;
     | x::xs -> 
-        words_table.((List.length !liste_mots) - 1) <- x;
+        words_table.((List.length !liste_mots) - 1) <- x; 
+        if (!min_word) > x.longueur then
+          min_word:=x.longueur;
+        if (!max_word) < x.longueur then
+          max_word:=x.longueur;
         liste_mots := xs; gen_tab () in 
   gen_tab ();;
 
+let minmax_word = fun () ->
+  (!min_word, !max_word);;
 
 
 let () =
   let matrix = (fun lig col init -> Array.init lig (fun _ -> Array.make col init)) ligne colonne '_' in
   remplir_matrice "fichier.txt" matrix;
-  let table_mots = tab_words matrix in ();
+  let table_mots = tab_words matrix in table_mots;
   Printf.printf "Succes\n";;
