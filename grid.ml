@@ -89,7 +89,7 @@ let tab_words = fun matrice ->
     match !liste_mots with
       [] -> words_table;
     | x::xs -> 
-        words_table.((List.length !liste_mots) - 1) <- x; 
+        words_table.((List.length !liste_mots) - 1) <- x;
         liste_mots := xs; gen_tab () in 
   gen_tab ();;
 

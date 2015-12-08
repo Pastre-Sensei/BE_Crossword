@@ -33,24 +33,25 @@ let close_file = fun channel ->
     raise exc;;
 
 let gen_tableau = fun taille_max ->
-  let tableau = (Array.init (taille_max+1) (fun i -> empty)) in
+  let tableau = (Array.init (taille_max +1) (fun i -> empty)) in
   tableau;;
 
 
-let read_file = fun channel tableau taille_max ->
+let read_file = fun channel tableau taille_min ->
   let compteur = ref 0 in
   let rec encore = fun () ->
       begin
         let l = input_line channel in
         let length = String.length l in
-        if length <= taille_max then begin
-          Array.set tableau length (add_nlist l tableau.(length));
-          if length = 4 then begin incr compteur; Printf.printf "%d\n" !compteur end;
-        end;
+        let taille_max = Array.length tableau in
+        if length <= taille_max && length >= taille_min then
+          begin
+            Array.set tableau length (add_nlist l tableau.(length));
+          end;
         encore ()
       end in
-    try encore () with End_of_file -> close_file channel;;
-
+  try encore () with End_of_file -> close_file channel;;
+      
 let print_tableau = fun tableau ->
   for i=0 to (Array.length tableau)-1 do
     Printf.printf "Nouvelle liste : mot de taille %d\n" i;
@@ -63,10 +64,10 @@ let printf_nlist = fun nlist ->
       
 let main = fun () ->
   let channel = open_file file in
-  let tableau1 = gen_tableau 8 in
-  read_file channel tableau1 8;
+  let (min_word, max_word) = Grid.minmax_word () in
+  let tableau1 = gen_tableau max_word in
+  read_file channel tableau1 min_word;
   Printf.printf "Fini\n";
   print_tableau tableau1;
   printf_nlist tableau1.(5);;
 main ();;
-  
