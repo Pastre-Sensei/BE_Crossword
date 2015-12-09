@@ -1,5 +1,5 @@
 type word = {
-   mutable sens : string;
+   mutable sens : string; (* Vraiment besoin du mutable ? *)
    mutable ligne_colonne : int;
    mutable debut : int;
    mutable longueur : int
@@ -24,8 +24,8 @@ let remplir_matrice = fun file_path ->
   let liste = ref [] in
   let file = fic_ouvre_toi file_path in
   let rec encore = fun () ->
-    var := input_char file;
-    if (!var) != '\n' then
+    var := input_char file; (* input_line ? avec ligne.[i]*)
+    if (!var) != '\n' then (*Lignes dans liste, reverse, Array of list *)
       begin
         liste:=(!var) :: (!liste);
         if !flag = 0 then
