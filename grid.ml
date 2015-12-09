@@ -13,32 +13,51 @@ let fic_ouvre_toi = fun file_path ->
     Printf.printf "%s ne s ouvre pas en lecture\n" file_path;
     raise exc;;
 
-let ligne = 10;;
-let colonne = 10;;
+let ligne = ref 1;;
+let colonne = ref 0;;
 let min_word  = ref max_int;;
 let max_word  = ref 0;;
 
-let remplir_matrice = fun file_path matrice ->
+let remplir_matrice = fun file_path ->
+  let flag = ref 0 in
   let var = ref ' ' in
+  let liste = ref [] in
   let file = fic_ouvre_toi file_path in
-  for i = 0 to ligne - 1  do
-    for j = 0 to colonne  do
+  let rec encore = fun () ->
+    var := input_char file;
+    if (!var) != '\n' then
       begin
-        var := input_char file;
-        if (!var)!='\n' then
-          matrice.(i).(j) <- (!var)
+        liste:=(!var) :: (!liste);
+        if !flag = 0 then
+          incr colonne;
       end
+    else
+      begin
+        incr ligne;
+        flag:=1;
+      end;
+    let matrix = Array.make_matrix !ligne !colonne '_' in
+    for i = 0 to !ligne - 1  do
+      for j = 0 to !colonne - 1  do
+        begin
+          match !liste with
+            [] -> ();
+          | x::xs ->
+              matrix.(i).(j) <- x;
+              liste:=xs;
+        end
+      done
     done
-  done;;
+  in try encore () with End_of_file -> () ;;
 
 let tab_words = fun matrice ->
   let liste_mots = ref [] in
   let x_val = ref 0 in
   let cpt = ref 0 in
   let var = ref {sens="horizontal"; ligne_colonne=0; debut=0; longueur=0} in
-  for i = 0 to ligne - 1 do (*Horizontalement*)
+  for i = 0 to !ligne - 1 do (*Horizontalement*)
       x_val := 0;
-    for j = 0 to colonne - 1 do
+    for j = 0 to !colonne - 1 do
       if matrice.(i).(j)='*' then 
         begin
           if (!cpt) >= 2 then
@@ -63,9 +82,9 @@ let tab_words = fun matrice ->
       end
   done;
 
-  for j = 0 to colonne - 1 do (*Verticalement*)
+  for j = 0 to !colonne - 1 do (*Verticalement*)
     x_val := 0;
-    for i = 0 to ligne - 1 do 
+    for i = 0 to !ligne - 1 do 
       if matrice.(i).(j)='*' then
           begin
             if (!cpt) >= 2 then
@@ -105,9 +124,9 @@ let tab_words = fun matrice ->
 let minmax_word = fun () ->
   (!min_word, !max_word);;
 
-
+(*
 let () =
-  let matrix = (fun lig col init -> Array.init lig (fun _ -> Array.make col init)) ligne colonne '_' in
-  remplir_matrice "fichier.txt" matrix;
-  (* let table_mots = tab_words matrix in table_mots in *)
+  let matrix = remplir_matrice "fichier.txt" in matrix;
+  let table_mots = tab_words matrix in ();
   Printf.printf "Succes\n";;
+*)
