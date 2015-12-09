@@ -109,5 +109,5 @@ let minmax_word = fun () ->
 let () =
   let matrix = (fun lig col init -> Array.init lig (fun _ -> Array.make col init)) ligne colonne '_' in
   remplir_matrice "fichier.txt" matrix;
-  let table_mots = tab_words matrix in table_mots;
+  (* let table_mots = tab_words matrix in table_mots in *)
   Printf.printf "Succes\n";;

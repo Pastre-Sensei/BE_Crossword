@@ -38,7 +38,6 @@ let gen_tableau = fun taille_max ->
 
 
 let read_file = fun channel tableau taille_min ->
-  let compteur = ref 0 in
   let rec encore = fun () ->
       begin
         let l = input_line channel in
