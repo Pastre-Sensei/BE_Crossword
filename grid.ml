@@ -1,8 +1,8 @@
 type word = {
-   mutable sens : string; (* Vraiment besoin du mutable ? *)
-   mutable ligne_colonne : int;
-   mutable debut : int;
-   mutable longueur : int
+    sens : string;
+    ligne_colonne : int;
+    debut : int;
+    longueur : int
 
 };;
 
@@ -13,7 +13,7 @@ let fic_ouvre_toi = fun file_path ->
     Printf.printf "%s ne s ouvre pas en lecture\n" file_path;
     raise exc;;
 
-let ligne = ref 1;;
+let ligne = ref 0;;
 let colonne = ref 0;;
 let min_word  = ref max_int;;
 let max_word  = ref 0;;
@@ -24,8 +24,8 @@ let remplir_matrice = fun file_path ->
   let liste = ref [] in
   let file = fic_ouvre_toi file_path in
   let rec encore = fun () ->
-    var := input_char file; (* input_line ? avec ligne.[i]*)
-    if (!var) != '\n' then (*Lignes dans liste, reverse, Array of list *)
+    var := input_char file;
+    if (!var) != '\n' then
       begin
         liste:=(!var) :: (!liste);
         if !flag = 0 then
@@ -36,19 +36,24 @@ let remplir_matrice = fun file_path ->
         incr ligne;
         flag:=1;
       end;
-    let matrix = Array.make_matrix !ligne !colonne '_' in
-    for i = 0 to !ligne - 1  do
-      for j = 0 to !colonne - 1  do
-        begin
-          match !liste with
+    encore () in
+  try 
+    encore () 
+  with 
+    End_of_file ->
+      let matrix = Array.make_matrix !ligne !colonne '_' in
+      for i = 0 to !ligne - 1  do
+        for j = 0 to !colonne - 1  do
+          begin
+            match !liste with
             [] -> ();
-          | x::xs ->
-              matrix.(i).(j) <- x;
-              liste:=xs;
-        end
-      done
-    done
-  in try encore () with End_of_file -> () ;;
+            | x::xs ->
+                liste:=xs;
+                matrix.(!ligne -1 -i).(!colonne -1 -j) <- x;
+          end
+        done
+      done;
+      matrix;;
 
 let tab_words = fun matrice ->
   let liste_mots = ref [] in
@@ -124,9 +129,8 @@ let tab_words = fun matrice ->
 let minmax_word = fun () ->
   (!min_word, !max_word);;
 
-(*
+
 let () =
-  let matrix = remplir_matrice "fichier.txt" in matrix;
-  let table_mots = tab_words matrix in ();
+  let matrix = remplir_matrice "fichier.txt" in
+  let table_mots = tab_words matrix in table_mots;
   Printf.printf "Succes\n";;
-*)
