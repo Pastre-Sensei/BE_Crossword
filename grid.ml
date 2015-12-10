@@ -3,7 +3,6 @@ type word = {
     ligne_colonne : int;
     debut : int;
     longueur : int
-
 };;
 
 let fic_ouvre_toi = fun file_path ->
@@ -13,7 +12,80 @@ let fic_ouvre_toi = fun file_path ->
     Printf.printf "%s ne s ouvre pas en lecture\n" file_path;
     raise exc;;
 
-let ligne = ref 0;;
+(*
+let close_file = fun channel ->
+  try 
+    close_in channel
+  with exc ->
+    Printf.printf "%s ne se ferme pas bien\n" "dico.txt";
+    raise exc;;
+
+
+let read_grid = fun file_path ->
+  let file = fic_ouvre_toi file_path in
+  let liste_lignes = ref [] in
+  let compteur = ref 0 in
+  let rec lecture = fun () ->
+    let line = input_line file in
+    if line <> "" then
+      begin
+        liste_lignes := line :: !liste_lignes;
+        incr compteur;
+        lecture ()
+      end
+    else
+      raise End_of_file
+  in
+  begin
+    try
+      lecture ()
+    with
+      End_of_file -> close_file file;
+  end;
+  liste_lignes := List.rev !liste_lignes;
+  
+  let matrice_grid = Array.of_list liste_lignes in
+  matrice;;
+  
+        
+let gen_tab_words = fun matrice -> (* Genere le tableau de mots *)
+  for i=0 to Array.length matrice
+  do
+    for j=0 to String.length matrice.(i)
+    do 
+      let line = matrice.(i) in
+      let rec recognize = fun indice compteur ->
+        match line.[j] with
+          "*" -> begin
+            if compteur >= 2 then 
+              let new_word = {sens:"horizontal";ligne_colonne:i;debut:
+          
+        *)
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let ligne = ref 1;;
 let colonne = ref 0;;
 let min_word  = ref max_int;;
 let max_word  = ref 0;;
