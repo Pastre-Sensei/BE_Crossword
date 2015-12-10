@@ -64,7 +64,7 @@ let gen_tab_words = fun matrice -> (* Genere le tableau de mots *)
           incr compteur;
           if j = j_length && !compteur >=2 then  (* Gere les blancs de fin de ligne *)
             begin
-              let new_word = {sens="horizontal"; ligne_colonne=i; debut=(j - !compteur); longueur= (!compteur)} in
+              let new_word = {sens="horizontal"; ligne_colonne=i; debut=(j - !compteur +1); longueur= (!compteur)} in
               word_list := new_word::!word_list;
               compteur := 0;
             end; (* Si ce n'est pas en fin de ligne, on incrémente le compteur de l'eventuel mot trouvé *)
@@ -81,6 +81,7 @@ let gen_tab_words = fun matrice -> (* Genere le tableau de mots *)
             compteur := 0
     done
   done;
+  compteur := 0;
   let j_length = String.length matrice.(0) - 1 in (* Arbitraire pour l'istant *)
   for j=0 to j_length
   do
