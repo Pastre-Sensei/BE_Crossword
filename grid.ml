@@ -1,9 +1,9 @@
 type word = {
-    sens : string;
+    sens : string; (* Vraiment besoin du mutable ? *)
     ligne_colonne : int;
     debut : int;
     longueur : int
-};;
+  };;
 
 let fic_ouvre_toi = fun file_path ->
   try
@@ -61,7 +61,6 @@ let gen_tab_words = fun matrice -> (* Genere le tableau de mots *)
               let new_word = {sens:"horizontal";ligne_colonne:i;debut:
           
         *)
-        
 
 
 
