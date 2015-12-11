@@ -5,7 +5,7 @@ type variable = {
     mutable crossed : int list};;
 
 
-let instanciation = fun var state chaine grid var_table ->
+let instanciation = fun var state chaine grid var_table -> (*Pour rendre vivant : \r%d%! *)
 
   let grid_add = fun () -> (* Recopie la chaine instanciee dans la grille *)
     if var.word.sens = "horizontal" then
