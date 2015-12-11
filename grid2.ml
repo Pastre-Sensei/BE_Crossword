@@ -49,6 +49,8 @@ let read_grid = fun file_path -> (* Genere la matrice à partir du fichier lu *)
         
 let gen_tab_words = fun matrice -> (* Genere le tableau de mots *)
   Printf.printf "Gen_tab_words appelé\n";
+  let min_length = ref 5 in
+  let max_length = ref 2 in
   let i_length = Array.length matrice -1 in
   let compteur = ref 0 in
   let word_list = ref [] in
@@ -66,6 +68,8 @@ let gen_tab_words = fun matrice -> (* Genere le tableau de mots *)
             begin
               let new_word = {sens="horizontal"; ligne_colonne=i; debut=(j - !compteur +1); longueur= (!compteur)} in
               word_list := new_word::!word_list;
+              if !compteur < !min_length then min_length := !compteur;
+              if !compteur > !max_length then max_length := !compteur;
               compteur := 0;
             end; (* Si ce n'est pas en fin de ligne, on incrémente le compteur de l'eventuel mot trouvé *)
         end        
@@ -75,6 +79,8 @@ let gen_tab_words = fun matrice -> (* Genere le tableau de mots *)
             begin
               let new_word = {sens="horizontal"; ligne_colonne=i; debut=(j - !compteur); longueur= (!compteur)} in
               word_list := new_word::!word_list;
+              if !compteur < !min_length then min_length := !compteur;
+              if !compteur > !max_length then max_length := !compteur;
               compteur := 0
             end
           else
@@ -82,7 +88,7 @@ let gen_tab_words = fun matrice -> (* Genere le tableau de mots *)
     done
   done;
   compteur := 0;
-  let j_length = String.length matrice.(0) - 1 in (* Arbitraire pour l'istant *)
+  let j_length = String.length matrice.(0) - 1 in (* Arbitraire pour l'istant *) (* Vertical *)
   for j=0 to j_length
   do
     for i=0 to i_length
@@ -91,10 +97,12 @@ let gen_tab_words = fun matrice -> (* Genere le tableau de mots *)
       if char = '_' then
         begin
           incr compteur;
-          if i = i_length && !compteur >=2 then  (* Gere les blancs de fin de colomne *)
+          if i = i_length && !compteur >=2 then  (* Gere les blancs de fin de ligne *)
           begin
-            let new_word = {sens="vertical"; ligne_colonne=j; debut=(i - !compteur); longueur=(!compteur)} in
+            let new_word = {sens="vertical"; ligne_colonne=j; debut=(i - !compteur +1); longueur=(!compteur)} in
             word_list := new_word::!word_list;
+            if !compteur < !min_length then min_length := !compteur;
+            if !compteur > !max_length then max_length := !compteur;
             compteur := 0;
           end;(* Si ce n'est pas en fin de ligne, on incrémente le compteur de l'eventuel mot trouvé *)
         end
@@ -105,6 +113,8 @@ let gen_tab_words = fun matrice -> (* Genere le tableau de mots *)
             begin
               let new_word = {sens="vertical"; ligne_colonne=j; debut=(i - !compteur); longueur=(!compteur)} in
               word_list := new_word::!word_list;
+              if !compteur < !min_length then min_length := !compteur;
+              if !compteur > !max_length then max_length := !compteur;
               compteur := 0
             end
           else
@@ -113,6 +123,8 @@ let gen_tab_words = fun matrice -> (* Genere le tableau de mots *)
   done;
   
   let word_table = Array.of_list !word_list in
+  Printf.printf "Min_length : %d\n" !min_length;
+  Printf.printf "Max_length : %d\n" !max_length;
   word_table;;
   
 
