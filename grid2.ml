@@ -1,3 +1,8 @@
+type sens = 
+    H of bool
+  | V of bool;;
+
+
 type word = {
     sens : string; (* Vraiment besoin du mutable ? *)
     ligne_colonne : int;
