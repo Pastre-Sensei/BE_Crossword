@@ -1,6 +1,5 @@
-
 type word = {
-    sens : bool; (* Vraiment besoin du mutable ? *)
+    vertical : bool; (* Vraiment besoin du mutable ? *)
     ligne_colonne : int;
     debut : int;
     longueur : int
@@ -9,8 +8,8 @@ type word = {
 type variable = {
     id : int;
     mutable domain : Dico_load.nlist;
-    word : Grid.word;
-    mutable crossed : word list};;
+    word : word;
+    mutable crossed : int list};;
 
 
 let fic_ouvre_toi = fun file_path ->
@@ -63,7 +62,7 @@ let gen_tab_words = fun matrice -> (* Genere le tableau de mots *)
           incr compteur;
           if j = j_length && !compteur >=2 then  (* Gere les blancs de fin de ligne *)
             begin
-              let new_word = {sens=false; ligne_colonne=i; debut=(j - !compteur +1); longueur= (!compteur)} in
+              let new_word = {vertical=false; ligne_colonne=i; debut=(j - !compteur +1); longueur= (!compteur)} in
               word_list := new_word::!word_list;
               if !compteur < !min_length then min_length := !compteur;
               if !compteur > !max_length then max_length := !compteur;
@@ -74,7 +73,7 @@ let gen_tab_words = fun matrice -> (* Genere le tableau de mots *)
         if char = '*' then
           if !compteur >=2 then (* Si lorsque l'on trouve une étoile le compteur est d'au moins 2, on cree un mot *)
             begin
-              let new_word = {sens=false; ligne_colonne=i; debut=(j - !compteur); longueur= (!compteur)} in
+              let new_word = {vertical=false; ligne_colonne=i; debut=(j - !compteur); longueur= (!compteur)} in
               word_list := new_word::!word_list;
               if !compteur < !min_length then min_length := !compteur;
               if !compteur > !max_length then max_length := !compteur;
@@ -96,7 +95,7 @@ let gen_tab_words = fun matrice -> (* Genere le tableau de mots *)
           if i = i_length then  (* Gere les blancs de fin de ligne *)
             if !compteur>=2 then
               begin
-                let new_word = {sens=true; ligne_colonne=j; debut=(i - !compteur +1); longueur=(!compteur)} in
+                let new_word = {vertical=true; ligne_colonne=j; debut=(i - !compteur +1); longueur=(!compteur)} in
                 word_list := new_word::!word_list;
                 if !compteur < !min_length then min_length := !compteur;
                 if !compteur > !max_length then max_length := !compteur;
@@ -109,7 +108,7 @@ let gen_tab_words = fun matrice -> (* Genere le tableau de mots *)
         if char = '*' then
           if !compteur >=2 then (* Si lorsque l'on trouve une étoile le compteur est d'au moins 2, on cree un mot *)
             begin
-              let new_word = {sens=true; ligne_colonne=j; debut=(i - !compteur); longueur=(!compteur)} in
+              let new_word = {vertical=true; ligne_colonne=j; debut=(i - !compteur); longueur=(!compteur)} in
               word_list := new_word::!word_list;
               if !compteur < !min_length then min_length := !compteur;
               if !compteur > !max_length then max_length := !compteur;
@@ -127,42 +126,54 @@ let gen_tab_words = fun matrice -> (* Genere le tableau de mots *)
   
 
 let var_table = fun table_mots ->
-  let id_h = ref 0 in
-  let liste_var = ref [] in
-  let horizontaux = ref [] in
-  let verticaux = ref [] in
-  for i=0 to Array.length table_mots -1 do
-    if not table_mots.(i).sens then
-      horizontaux := table_mots.(i) :: !horizontaux
-    else
-      verticaux := table_mots.(i) :: !verticaux
-  done;
-  let range_h = List.length !horizontaux in
-  let range_v = List.length !verticaux in
-  for i=0 to range_h do (* horizontal *)
-    let h = !horizontaux.(i) in
-    let liste_h = ref [] in
-    for j=0 to range_v do
-      let v = !verticaux.(j) in
-      if v.ligne_colonne >= h.debut && v.ligne_colonne <= (h.debut + h.longueur-1) && v.debut <= h.ligne_colonne && (v.debut + v.longueur - 1) >= h.ligne_colonne then
-        liste_h:=v::!liste_h;    
-    done;
-    let var_tmp = {id=id_h; domain=Dico_load.empty; word=h; crossed=!liste_h} in
-    liste_var:=var_tmp::!liste_var;
-    incr id_h;
-  done
 
+  let horizontaux_liste = ref [] in
+  let verticaux_liste = ref [] in
+  let table_var = Array.init (Array.length table_mots) (fun i -> {id=i; domain=Dico_load.empty; word=table_mots.(i); crossed=[]}) in
+  for i=0 to Array.length table_var -1 do
+    if not table_var.(i).word.vertical then
+      horizontaux_liste := table_var.(i) :: !horizontaux_liste
+    else
+      verticaux_liste := table_var.(i) :: !verticaux_liste
+  done;
+  let range_h = List.length !horizontaux_liste in
+  let range_v = List.length !verticaux_liste in
+  let horizontaux = Array.of_list !horizontaux_liste in
+  let verticaux = Array.of_list !verticaux_liste in
+
+  for i=0 to range_h do (* horizontal *)
+    let h = horizontaux.(i) in
+    for j=0 to range_v do
+      let v = verticaux.(j) in
+      if v.word.ligne_colonne >= h.word.debut && v.word.ligne_colonne <= (h.word.debut + h.word.longueur-1) && v.word.debut <= h.word.ligne_colonne && (v.word.debut + v.word.longueur - 1) >= h.word.ligne_colonne then begin
+        h.crossed <- v.id :: h.crossed;
+        v.crossed <- h.id :: v.crossed;
+      end
+    done;
+  done;
+  table_var;;
+    
 
 
 let print_tab_words = fun tab_words ->
-  Array.iteri (fun i word -> Printf.printf "Mot no %d : {sens : %B; ligne_col : %d; debut : %d; longueur : %d}\n" i word.sens word.ligne_colonne word.debut word.longueur) tab_words;;
+  Array.iteri (fun i word -> Printf.printf "Mot no %d : {vertical : %B; ligne_col : %d; debut : %d; longueur : %d}\n" i word.vertical word.ligne_colonne word.debut word.longueur) tab_words;;
+
+let print_crossed = fun crossed ->
+  List.iteri (fun i id -> Printf.printf "id %d : %d\n" i id) crossed;;
+
+let print_tab_var = fun tab_var ->
+  Array.iteri (fun i var -> Printf.printf "Var id : %d, word {v:%B lc:%d d:%d l:%d}" var.id var.word.vertical var.word.ligne_colonne var.word.debut var.word.longueur) tab_var;
+  for i=0 to Array.length tab_var -1 do
+    print_crossed tab_var.(i).crossed
+  done;;
 
 
 let main = fun nom_fichier ->
   let matrice = read_grid nom_fichier in
   let tab_words = gen_tab_words matrice in
   print_tab_words tab_words;
-  tab_words;;
-
+  let tab_var = var_table tab_words in 
+  print_tab_var tab_var;
+  tab_var;;
 main "grille_test.txt";;
   
