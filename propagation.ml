@@ -1,14 +1,8 @@
-type variable = {
-    id : int;
-    mutable domain : Dico_load.nlist;
-    word : Grid.word;
-    mutable crossed : int list};;
-
 
 let instanciation = fun var state chaine grid var_table -> (*Pour rendre vivant : \r%d%! *)
 
   let grid_add = fun () -> (* Recopie la chaine instanciee dans la grille *)
-    if not var.word.sens then (* horizontal *)
+    if not var.word.vertical then (* horizontal *)
       begin
         let x = var.word.ligne_colonne in
         let y = var.word.debut in
