@@ -1,5 +1,5 @@
 # Custom part
-SOURCES = dico_load.ml grid2.ml propagation.ml
+SOURCES = dico_load.ml grid.ml propagation.ml
 #LIBS =
 TARGET = executable
 
