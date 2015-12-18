@@ -162,12 +162,16 @@ let print_tab_words = fun tab_words ->
 let print_crossed = fun crossed ->
   List.iteri (fun i id -> Printf.printf "id %d : %d\n" i id) crossed;;
 
-let print_tab_var = fun tab_var ->
-  Array.iteri (fun i var -> Printf.printf "Var id : %d, word {v:%B lc:%d d:%d l:%d}" var.id var.word.vertical var.word.ligne_colonne var.word.debut var.word.longueur) tab_var;
-  for i=0 to Array.length tab_var -1 do
-    print_crossed tab_var.(i).crossed
-  done;;
 
+let print_var = fun var ->
+  Printf.printf "Var  Mot :  {vertical : %B; ligne_col : %d; debut : %d; longueur : %d}\n *******" var.word.vertical var.word.ligne_colonne var.word.debut var.word.longueur;
+  List.iter (fun id -> Printf.printf "**Crossed : %d" id) var.crossed;
+  Printf.printf "Fin de la variable\n";;
+
+
+
+let print_tab_var = fun tab_var ->
+  Array.iter print_var tab_var;;
 
 let main = fun nom_fichier ->
   let matrice = read_grid nom_fichier in
