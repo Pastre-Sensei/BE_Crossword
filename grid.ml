@@ -5,6 +5,7 @@ type word = {
     longueur : int
   };;
 
+
 type variable = {
     id : int;
     mutable domain : Dico_load.nlist;

@@ -54,7 +54,7 @@ let read_file = fun channel tableau taille_min ->
 let print_tableau = fun tableau ->
   for i=0 to (Array.length tableau)-1 do
     Printf.printf "Nouvelle liste : mot de taille %d\n" i;
-    Printf.printf "%d %d\n" (List.length tableau.(i).liste) tableau.(i).taille;
+    Printf.printf "%d %d\n" (List.length (tableau.(i).liste)) tableau.(i).taille;
   done;;
 
 let printf_nlist = fun nlist ->
@@ -63,9 +63,9 @@ let printf_nlist = fun nlist ->
       
 let main = fun () ->
   let channel = open_file file in
-  let (min_word, max_word) = Grid.minmax_word () in
-  let tableau1 = gen_tableau max_word in
-  read_file channel tableau1 min_word;
+  (*let (min_word, max_word) = Grid.minmax_word () in*)
+  let tableau1 = gen_tableau 18 in
+  read_file channel tableau1 2;
   Printf.printf "Fini\n";
   print_tableau tableau1;
   printf_nlist tableau1.(5);;
