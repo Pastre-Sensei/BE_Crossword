@@ -69,8 +69,8 @@ let erase_from_crossed = fun var var_table ->
 (*   in *)
 (*   () *)
 
-let get_var_from_id = fun id var_table ->
-  var_table.(id) in ()
+let get_var_from_id = fun var_table id ->
+  var_table.(id);;
 
 
 
@@ -105,64 +105,99 @@ let instanciation = fun var grid var_table chaine -> (*Pour rendre vivant : \r%d
 
 
 
-(* let restr_domain = fun grid var -> (\* Reduit le domaine de la variable parametre par rapport à ce qu'il y a dans la grille *\) *)
+let restr_domain = fun grid var -> (* Reduit le domaine de la variable parametre par rapport à ce qu'il y a dans la grille *)
 
-(*   let new_domain = ref Dico_load.empty in *)
-(*   if var.word.vertical then begin *)
-(*     let col = var.ligne_colonne and debut = var.word.debut and longueur = var.word.longueur in *)
-(*     let rec list_reduc_v = fun domain_list -> *)
-(*       match domain_list with *)
-(*         [] -> var.domain <- !new_domain *)
-(*       | mot :: reste -> *)
-(*           for j=0 to longueur -1 do *)
-(*             if grid.(debut + j).[col] = '_' || mot.[j] = grid.(debut + j).[col] then begin *)
-(*               new_domain := Dico_load.add_nlist mot !new_domain; *)
-(*               list_reduc_v reste; *)
-(*             end *)
-(*             else *)
-(*               list_reduc_v reste *)
-(*           done; *)
-(*     in list_reduc_v var.domain.liste *)
-(*   end *)
-(*   else begin *)
-(*     let ligne = var.ligne_colonne and debut = var.word.debut and longueur = var.word.longueur in *)
-(*     let rec list_reduc_h = fun domain_list -> *)
-(*       match domain_list with *)
-(*         [] -> var.domain <- !new_domain *)
-(*       | mot :: reste -> *)
-(*           for i=0 to longueur -1 do *)
-(*             if grid.(ligne).[debut + i] = '_' || mot.[i] = grid.(ligne).[debut + i] then begin *)
-(*               new_domain := Dico_load.add_nlist mot !new_domain; *)
-(*               list_reduc_h reste; *)
-(*             end *)
-(*             else list_reduc_h reste *)
-(*           done; *)
-(*     in list_reduc_h var.domain.liste *)
-(*   end;; *)
-
-
-
+  let new_domain = ref Dico_load.empty in
+  if var.Grid.word.vertical then begin
+    let col = var.Grid.word.ligne_colonne and debut = var.Grid.word.debut and longueur = var.Grid.word.longueur in
+    let rec list_reduc_v = fun domain_list ->
+      match domain_list with
+        [] -> var.domain <- !new_domain
+      | mot :: reste ->
+          for j=0 to longueur -1 do
+            if grid.(debut + j).[col] = '_' || mot.[j] = grid.(debut + j).[col] then begin
+              new_domain := Dico_load.add_nlist mot !new_domain;
+              list_reduc_v reste;
+            end
+            else
+              list_reduc_v reste
+          done;
+    in list_reduc_v var.domain.liste
+  end
+  else begin
+    let ligne = var.ligne_colonne and debut = var.word.debut and longueur = var.word.longueur in
+    let rec list_reduc_h = fun domain_list ->
+      match domain_list with
+        [] -> var.domain <- !new_domain
+      | mot :: reste ->
+          for i=0 to longueur -1 do
+            if grid.(ligne).[debut + i] = '_' || mot.[i] = grid.(ligne).[debut + i] then begin
+              new_domain := Dico_load.add_nlist mot !new_domain;
+              list_reduc_h reste;
+            end
+            else list_reduc_h reste
+          done;
+    in list_reduc_h var.domain.liste
+  end
+in ();;
 
 
-(* let filtre = fun var_liste var_table grid -> (\* state = tableau des var*\) *)
-(*   let new_tab = var_table in *)
+let test_domaine = fun var_table ->
+  let range = Array.length var_table in
+  let empty_domains = ref 0 in
+  for i=0 to (range-1) do
+    if var_table.(i).domain.taille <= 0 then incr empty_domains
+   (* else if var_table.(i).domain.taille = 1 then match var_table.(i).domain.liste with elt::reste -> instanciation var_table.(i) grid var_table elt *)
+  done;
+  !empty_domains;;
+
+
+
+
+
+
+let filtre = fun var var_table grid -> (* state = tableau des var*)
+  let new_tab = var_table in
+  let var_liste = var.crossed in
   
-(*   let rec filter = fun liste_var -> *)
-(*     match liste_var with *)
-(*       [] -> () *)
-(*     | var::remaining ->  *)
-(*         restr_domain grid var; *)
-(*         match var.domain.taille with *)
-(*           0 -> raise Dico_load.Empty *)
-(*         (\*| 1 -> begin*\) *)
-(*           (\*  match var.domain.liste with*\) *)
-(*           (\*    [] -> failwith "domaine.liste vide"*\) *)
-(*           (\*  | elt::reste ->  *\) *)
-(*          (\*       let new_crossed = instanciation var elt grid var_table in (\* Garder un oeil là dessus *\) *\) *)
-(*         (\*        filter (Array.to_list var_table); *\) *)
-(*        (\* end*\) *)
-(*         | _ -> *)
-(*             begin  *)
-(*                 new_tab.[var.id] <- var; *)
-(*             end *)
-(*   in filter var_liste *)
+  let rec filter = fun liste_var ->
+    match liste_var with
+      [] -> ()
+    | var::remaining ->
+        restr_domain grid var;
+        match var.domain.taille with
+          0 -> raise Dico_load.Empty
+        (*| 1 -> begin*)
+          (*  match var.domain.liste with*)
+          (*    [] -> failwith "domaine.liste vide"*)
+          (*  | elt::reste ->  *)
+         (*       let new_crossed = instanciation var elt grid var_table in (* Garder un oeil là dessus *) *)
+        (*        filter (Array.to_list var_table); *)
+       (* end*)
+        | _ ->
+            begin
+                new_tab.[var.id] <- var;
+            end
+  in filter var_liste
+
+
+(* let var_liste = fun tab_var id_liste -> *)
+(*   let new_list = ref [] in *)
+(*   let rec encore = fun tampon_list -> *)
+(*     match tampon_list with  *)
+(*       elt::reste -> begin new_liste := tab_var.(elt)::new_liste; encore reste end *)
+(*     | [] -> !new_list *)
+(*   in encore id_liste;; *)
+
+
+
+
+let filtrage = fun var var_table grid ->
+  let id_crossed = var.crossed in
+
+  List.iter (fun id -> let taille = var_table.(id).domain.taille in if taille <= 0 then 0 else taille) id_crossed;
+  let rec encore = fun liste ->
+    match liste with
+      elt::reste -> if elt = 0 then false else encore reste
+    | [] -> true
+  in encore id_crossed
