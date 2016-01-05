@@ -9,9 +9,9 @@ let grid_add = fun var chaine grid -> (* Recopie la chaine instanciee dans la gr
     end
   else
     begin (* vertical *)
-      let y = var.word.ligne_colonne in
-      let x = var.word.debut in
-      for i=0 to var.word.longueur do
+      let y = var.Grid.word.ligne_colonne in
+      let x = var.Grid.word.debut in
+      for i=0 to var.Grid.word.longueur do
         grid.(x+i).[y] <- chaine.[i];
       done
     end
@@ -20,9 +20,8 @@ in ()
 let filter_crossed = fun id tab_var id_var-> (* Fonction bas niveau utilisée dans un List.iter : permet d'enlever un mot instancié des crossed *)
   let var = tab_var.(id_var) in
   let new_crossed = ref [] in
-  List.iter (fun id1 -> if not (id1=id) then new_crossed := (id1 :: !new_crossed)) var.crossed;
-  var.crossed <- !new_crossed;
-  tab_var.(id_var) <- var;; (* ***** Met à jour le tableau ******** *)
+  List.iter (fun id1 -> if not (id1=id) then new_crossed := (id1 :: !new_crossed)) tab_var.(id_var).crossed;
+  tab_var.(id_var).crossed <- !new_crossed;; (* ***** Met à jour le tableau ******** *)
 
 
 
@@ -73,13 +72,30 @@ let erase_from_crossed = fun var var_table ->
 let get_var_from_id = fun id var_table ->
   var_table.(id) in ()
 
-let instanciation = fun var chaine grid var_table -> (*Pour rendre vivant : \r%d%! *)
+
+
+
+(* ************************************************** La vrai fonction ************************************************ *)
+
+let instanciation = fun var grid var_table chaine -> (*Pour rendre vivant : \r%d%! *)
   
   grid_add var chaine grid;
   
   var.domain <- Dico_load.add_nlist chaine Dico_load.empty; (* Reduit le domaine de la variable au seul mot instancie *)
   
   erase_from_crossed var var_table;; (* supprime le mot instancie des crossed *)
+
+(* ********************************************************************************************************************** *)
+
+
+
+
+
+
+
+
+
+
 
   
   
