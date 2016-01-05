@@ -10,7 +10,8 @@ type variable = {
     id : int;
     mutable domain : Dico_load.nlist;
     word : word;
-    mutable crossed : int list};;
+    mutable crossed : int list;
+    mutable instance : bool};;
 
 
 let fic_ouvre_toi = fun file_path ->
@@ -130,7 +131,7 @@ let var_table = fun table_mots ->
 
   let horizontaux_liste = ref [] in
   let verticaux_liste = ref [] in
-  let table_var = Array.init (Array.length table_mots) (fun i -> {id=i; domain=Dico_load.empty; word=table_mots.(i); crossed=[]}) in
+  let table_var = Array.init (Array.length table_mots) (fun i -> {id=i; domain=Dico_load.empty; word=table_mots.(i); crossed=[]; instance=false}) in
   for i=0 to Array.length table_var -1 do
     if not table_var.(i).word.vertical then
       horizontaux_liste := table_var.(i) :: !horizontaux_liste
