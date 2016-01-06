@@ -28,7 +28,7 @@ let rec bt = fun (vars : Grid.variable array) solution grid ->
       fun str ->
         let grid_local = Array.copy grid in
         Propagation.instanciation var grid vars str;
-        if (Propagation.filtre var vars grid) then (* le mot instancié est bon *)
+        if (Propagation.filtrage var vars grid) then (* le mot instancié est bon *)
           begin
             (vars.(!index)).instance = true;
             solution := (!index, str)::!solution;
@@ -52,3 +52,5 @@ let backtrack = fun vars solution grid ->
       for k = 0 to Array.length grid do
         Printf.printf "%s\n" grid.(k);
       done ;;
+let () =
+  Printf.printf "coucou\n";;
