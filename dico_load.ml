@@ -10,6 +10,8 @@ exception Empty
 
 let empty = {taille=0; liste = []};;
 
+let create = fun l -> {taille = List.length l; liste = l}
+
 let add_nlist = fun chaine nliste ->
    {taille = nliste.taille + 1; liste = chaine :: nliste.liste};;
 
