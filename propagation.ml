@@ -14,20 +14,18 @@ let grid_add = fun var chaine grid -> (* Recopie la chaine instanciee dans la gr
       for i=0 to var.Grid.word.longueur do
         grid.(x+i).[y] <- chaine.[i];
       done
-    end
-in ()
+    end;;
 
-let filter_crossed = fun id tab_var id_var-> (* Fonction bas niveau utilisée dans un List.iter : permet d'enlever un mot instancié des crossed *)
-  let var = tab_var.(id_var) in
+let filter_crossed = fun id (tab_var : Grid.variable array) id_var-> (* Fonction bas niveau utilisée dans un List.iter : permet d'enlever un mot instancié des crossed *)
   let new_crossed = ref [] in
   List.iter (fun id1 -> if not (id1=id) then new_crossed := (id1 :: !new_crossed)) tab_var.(id_var).crossed;
   tab_var.(id_var).crossed <- !new_crossed;; (* ***** Met à jour le tableau ******** *)
 
 
 
-let erase_from_crossed = fun var var_table ->
+let erase_from_crossed = fun (var : Grid.variable) (var_table : Grid.variable array) ->
 
-  List.iter (filter_crossed var.id var_table) var.crossed;
+  List.iter (filter_crossed var.id var_table) var.crossed;;
   
 
 
@@ -69,15 +67,11 @@ let erase_from_crossed = fun var var_table ->
 (*   in *)
 (*   () *)
 
-let get_var_from_id = fun var_table id ->
-  var_table.(id);;
-
-
 
 
 (* ************************************************** La vrai fonction ************************************************ *)
 
-let instanciation = fun var grid var_table chaine -> (*Pour rendre vivant : \r%d%! *)
+let instanciation = fun (var : Grid.variable) grid (var_table : Grid.variable array) chaine -> (*Pour rendre vivant : \r%d%! *)
   
   grid_add var chaine grid;
   
@@ -105,7 +99,7 @@ let instanciation = fun var grid var_table chaine -> (*Pour rendre vivant : \r%d
 
 
 
-let restr_domain = fun grid var -> (* Reduit le domaine de la variable parametre par rapport à ce qu'il y a dans la grille *)
+let restr_domain = fun grid (var : Grid.variable) -> (* Reduit le domaine de la variable parametre par rapport à ce qu'il y a dans la grille *)
 
   let new_domain = ref Dico_load.empty in
   if var.Grid.word.vertical then begin
@@ -125,7 +119,7 @@ let restr_domain = fun grid var -> (* Reduit le domaine de la variable parametre
     in list_reduc_v var.domain.liste
   end
   else begin
-    let ligne = var.ligne_colonne and debut = var.word.debut and longueur = var.word.longueur in
+    let ligne = var.Grid.word.ligne_colonne and debut = var.Grid.word.debut and longueur = var.Grid.word.longueur in
     let rec list_reduc_h = fun domain_list ->
       match domain_list with
         [] -> var.domain <- !new_domain
@@ -138,47 +132,36 @@ let restr_domain = fun grid var -> (* Reduit le domaine de la variable parametre
             else list_reduc_h reste
           done;
     in list_reduc_h var.domain.liste
-  end
-in ();;
-
-
-let test_domaine = fun var_table ->
-  let range = Array.length var_table in
-  let empty_domains = ref 0 in
-  for i=0 to (range-1) do
-    if var_table.(i).domain.taille <= 0 then incr empty_domains
-   (* else if var_table.(i).domain.taille = 1 then match var_table.(i).domain.liste with elt::reste -> instanciation var_table.(i) grid var_table elt *)
-  done;
-  !empty_domains;;
+  end;;
 
 
 
 
 
 
-let filtre = fun var var_table grid -> (* state = tableau des var*)
-  let new_tab = var_table in
-  let var_liste = var.crossed in
+(* let filtre = fun (var : Grid.variable) (var_table : Grid.variable array) grid -> (\* state = tableau des var*\) *)
+(*   let new_tab = var_table in *)
+(*   let var_liste = var.crossed in *)
   
-  let rec filter = fun liste_var ->
-    match liste_var with
-      [] -> ()
-    | var::remaining ->
-        restr_domain grid var;
-        match var.domain.taille with
-          0 -> raise Dico_load.Empty
-        (*| 1 -> begin*)
-          (*  match var.domain.liste with*)
-          (*    [] -> failwith "domaine.liste vide"*)
-          (*  | elt::reste ->  *)
-         (*       let new_crossed = instanciation var elt grid var_table in (* Garder un oeil là dessus *) *)
-        (*        filter (Array.to_list var_table); *)
-       (* end*)
-        | _ ->
-            begin
-                new_tab.[var.id] <- var;
-            end
-  in filter var_liste
+(*   let rec filtre_encore = fun (liste_var : int list) -> *)
+(*     match liste_var with *)
+(*       [] -> () *)
+(*     | id::remaining -> *)
+(*         restr_domain grid var_table.(id); *)
+(*         match var.domain.taille with *)
+(*           0 -> raise Dico_load.Empty *)
+(*         (\*| 1 -> begin*\) *)
+(*           (\*  match var.domain.liste with*\) *)
+(*           (\*    [] -> failwith "domaine.liste vide"*\) *)
+(*           (\*  | elt::reste ->  *\) *)
+(*          (\*       let new_crossed = instanciation var elt grid var_table in (\* Garder un oeil là dessus *\) *\) *)
+(*         (\*        filter (Array.to_list var_table); *\) *)
+(*        (\* end*\) *)
+(*         | _ -> *)
+(*             begin *)
+(*                 new_tab.(var.id) <- var; *)
+(*             end *)
+(*   in filtre_encore var_liste *)
 
 
 (* let var_liste = fun tab_var id_liste -> *)
@@ -192,12 +175,15 @@ let filtre = fun var var_table grid -> (* state = tableau des var*)
 
 
 
-let filtrage = fun var var_table grid ->
-  let id_crossed = var.crossed in
+let filtrage = fun (var : Grid.variable) (var_table : Grid.variable array) grid ->
 
-  List.iter (fun id -> let taille = var_table.(id).domain.taille in if taille <= 0 then 0 else taille) id_crossed;
-  let rec encore = fun liste ->
-    match liste with
-      elt::reste -> if elt = 0 then false else encore reste
-    | [] -> true
-  in encore id_crossed
+  restr_domain grid var;
+
+  let id_crossed = var.crossed in
+  let id_array = Array.of_list id_crossed in
+  let flag = ref true in
+  
+  for i=0 to Array.length id_array do
+    if var_table.(id_array.(i)).domain.taille <= 0 then flag := false
+  done;
+  !flag
