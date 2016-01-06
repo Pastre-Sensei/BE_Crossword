@@ -2,6 +2,7 @@ val file : string
 type nlist = { mutable taille : int; mutable liste : string list; }
 exception Empty
 val empty : nlist
+val create : string list -> nlist
 val add_nlist : string -> nlist -> nlist
 val take_nlist : nlist -> string * nlist
 val open_file : string -> in_channel
