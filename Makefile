@@ -1,5 +1,5 @@
 # Custom part
-SOURCES = dico_load.ml grid.ml propagation.ml
++SOURCES = dico_load.ml grid.ml propagation.ml backtrack.ml
 #LIBS =
 TARGET = executable
 
@@ -13,7 +13,7 @@ all: .depend byte
 byte: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(OCAMLC) -o $@ $(@) $^
+	$(OCAMLC) -o $@ $^
 
 %.cmi: %.mli
 	$(OCAMLC) $<
