@@ -1,11 +1,11 @@
 dico_load.cmi :
-grid2.cmi :
-propagation.cmi :
-dico_load.cmo : grid.cmo dico_load.cmi
-dico_load.cmx : grid.cmx dico_load.cmi
-grid.cmo :
-grid.cmx :
-grid2.cmo : grid2.cmi
-grid2.cmx : grid2.cmi
-propagation.cmo : propagation.cmi
-propagation.cmx : propagation.cmi
+grid.cmi : dico_load.cmi
+propagation.cmi : grid.cmi
+backtrack.cmo : propagation.cmi grid.cmi
+backtrack.cmx : propagation.cmx grid.cmx
+dico_load.cmo : dico_load.cmi
+dico_load.cmx : dico_load.cmi
+grid.cmo : dico_load.cmi grid.cmi
+grid.cmx : dico_load.cmx grid.cmi
+propagation.cmo : grid.cmi dico_load.cmi propagation.cmi
+propagation.cmx : grid.cmx dico_load.cmx propagation.cmi
