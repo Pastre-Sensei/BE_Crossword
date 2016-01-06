@@ -74,11 +74,7 @@ let backtrack = fun vars grid ->
 
 (* main *)
 let () =
+  Printf.printf "coucou\n";;
   let grid = Grid.read grid_file in
   let dico = Dico.read dico_file grid in
   backtrack vars 
-
-
-
-let () =
-  Printf.printf "coucou\n";;
