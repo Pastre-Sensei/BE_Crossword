@@ -1,8 +1,11 @@
+open Grid
+open Dico_load
+
 let grid_add = fun var chaine grid -> (* Recopie la chaine instanciee dans la grille *)
-  if not var.Grid.word.vertical then (* horizontal *)
+  if not var.Grid.word.Grid.vertical then (* horizontal *)
     begin
-      let x = var.Grid.word.ligne_colonne in
-      let y = var.Grid.word.debut in
+      let x = var.Grid.word.Grid.ligne_colonne in
+      let y = var.Grid.word.Grid.debut in
       for i=0 to var.Grid.word.longueur-1 do
         grid.(x).[y+i] <- chaine.[i];
       done
@@ -100,23 +103,18 @@ let instanciation = fun (var : Grid.variable) grid (var_table : Grid.variable ar
 
 
 let restr_domain = fun grid (var : Grid.variable) -> (* Reduit le domaine de la variable parametre par rapport à ce qu'il y a dans la grille *)
-
-  let new_domain = ref Dico_load.empty in
   if var.Grid.word.vertical then begin
     let col = var.Grid.word.ligne_colonne and debut = var.Grid.word.debut and longueur = var.Grid.word.longueur in
-    let rec list_reduc_v = fun domain_list ->
-      match domain_list with
-        [] -> var.domain <- !new_domain
-      | mot :: reste ->
-          for j=0 to longueur -1 do
-            if grid.(debut + j).[col] = '_' || mot.[j] = grid.(debut + j).[col] then begin
-              new_domain := Dico_load.add_nlist mot !new_domain;
-              list_reduc_v reste;
-            end
-            else
-              list_reduc_v reste
-          done;
-    in list_reduc_v var.domain.liste
+    let filtered =
+      List.filter
+        (fun mot ->
+          try
+            for j=0 to longueur -1 do
+              if grid.(debut + j).[col] <> '_' && mot.[j] <> grid.(debut + j).[col] then raise Exit
+            done;
+            true
+          with Exit -> false)
+        var.domain.liste in
   end
   else begin
     let ligne = var.Grid.word.ligne_colonne and debut = var.Grid.word.debut and longueur = var.Grid.word.longueur in
