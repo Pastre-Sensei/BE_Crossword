@@ -164,6 +164,9 @@ let var_table = fun table_mots domain_table ->
   table_var;;
     
 
+let get_vars = fun grid dico ->
+  let word_table = gen_tab_words grid in
+  var_table word_table dico;;
 
 
 

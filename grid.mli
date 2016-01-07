@@ -12,4 +12,4 @@ type variable = {
   mutable instance : bool;
 }
 val get_grid : string -> string array
-val var_table : word array -> Dico_load.nlist array -> variable array
+val get_vars : string array -> Dico_load.nlist array -> variable array
