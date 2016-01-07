@@ -181,4 +181,4 @@ let filtrage = fun (var : Grid.variable) (var_table : Grid.variable array) grid 
   for i=0 to Array.length cross_array do
     if cross_array.(i).domain.taille <= 0 then flag := false
   done;
-  !flag
+  !flag;;
