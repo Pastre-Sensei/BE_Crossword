@@ -138,8 +138,8 @@ let var_table = fun table_mots ->
     else
       verticaux_liste := table_var.(i) :: !verticaux_liste
   done;
-  let range_h = List.length !horizontaux_liste in
-  let range_v = List.length !verticaux_liste in
+  let range_h = (List.length !horizontaux_liste) -1 in
+  let range_v = (List.length !verticaux_liste) -1 in
   let horizontaux = Array.of_list !horizontaux_liste in
   let verticaux = Array.of_list !verticaux_liste in
 
@@ -165,21 +165,19 @@ let print_crossed = fun crossed ->
 
 
 let print_var = fun var ->
-  Printf.printf "Var  Mot :  {vertical : %B; ligne_col : %d; debut : %d; longueur : %d}\n *******" var.word.vertical var.word.ligne_colonne var.word.debut var.word.longueur;
+  Printf.printf "Var  Mot :  {vertical : %B; ligne_col : %d; debut : %d; longueur : %d}\n *******\n" var.word.vertical var.word.ligne_colonne var.word.debut var.word.longueur;
   List.iter (fun id -> Printf.printf "**Crossed : %d" id) var.crossed;
-  Printf.printf "Fin de la variable\n";;
+  Printf.printf "\nFin de la variable\n";;
 
 
 
 let print_tab_var = fun tab_var ->
   Array.iter print_var tab_var;;
 
-let main = fun nom_fichier ->
-  let matrice = read_grid nom_fichier in
+let () = 
+  let matrice = read_grid "grille_test.txt" in
   let tab_words = gen_tab_words matrice in
   print_tab_words tab_words;
+  Printf.printf "Fini\n";
   let tab_var = var_table tab_words in 
-  print_tab_var tab_var;
-  tab_var;;
-main "grille_test.txt";;
-  
+  print_tab_var tab_var;;

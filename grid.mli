@@ -20,4 +20,3 @@ val print_tab_words : word array -> unit
 val print_crossed : int list -> unit
 val print_var : variable -> unit
 val print_tab_var : variable array -> unit
-val main : string -> variable array
