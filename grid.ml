@@ -166,7 +166,8 @@ let print_crossed = fun crossed ->
 
 let print_var = fun var ->
   Printf.printf "Var  Mot :  {vertical : %B; ligne_col : %d; debut : %d; longueur : %d}\n *******\n" var.word.vertical var.word.ligne_colonne var.word.debut var.word.longueur;
-  List.iter (fun id -> Printf.printf "**Crossed : %d" id) var.crossed;
+  Printf.printf "Crossed : \t";
+  List.iter (fun id -> Printf.printf "%d\t" id) var.crossed;
   Printf.printf "\nFin de la variable\n";;
 
 
