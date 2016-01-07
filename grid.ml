@@ -29,7 +29,7 @@ let close_file = fun channel ->
     raise exc;;
 
 
-let read_grid = fun file_path -> (* Genere la matrice à partir du fichier lu *)
+let get_grid = fun file_path -> (* Genere la matrice à partir du fichier lu *)
   let file = fic_ouvre_toi file_path in
   let liste_lignes = ref [] in
   try
@@ -127,7 +127,14 @@ let gen_tab_words = fun matrice -> (* Genere le tableau de mots *)
   word_table;;
   
 
-let var_table = fun table_mots ->
+
+let load_domain = fun var_table domain_table -> (* Charge les domaines des variables avec tous les mots du dictionnaire *)
+  for i=0 to Array.length var_table -1 do
+    let ln = var_table.(i).word.longueur in
+    var_table.(i).domain <- domain_table.(ln)
+  done;;
+
+let var_table = fun table_mots domain_table ->
 
   let horizontaux_liste = ref [] in
   let verticaux_liste = ref [] in
@@ -153,9 +160,16 @@ let var_table = fun table_mots ->
       end
     done;
   done;
+  load_domain table_var domain_table;
   table_var;;
     
 
+
+
+
+
+
+(* **** Printf **** *)    
 
 let print_tab_words = fun tab_words ->
   Array.iteri (fun i word -> Printf.printf "Mot no %d : {vertical : %B; ligne_col : %d; debut : %d; longueur : %d}\n" i word.vertical word.ligne_colonne word.debut word.longueur) tab_words;;
@@ -163,22 +177,24 @@ let print_tab_words = fun tab_words ->
 let print_crossed = fun crossed ->
   List.iteri (fun i id -> Printf.printf "id %d : %d\n" i id) crossed;;
 
-
-let print_var = fun var ->
+let print_var = fun (var : variable) ->
   Printf.printf "Var  Mot :  {vertical : %B; ligne_col : %d; debut : %d; longueur : %d}\n *******\n" var.word.vertical var.word.ligne_colonne var.word.debut var.word.longueur;
+  Printf.printf "Taille domaine : %d\n" var.domain.Dico_load.taille;
   Printf.printf "Crossed : \t";
   List.iter (fun id -> Printf.printf "%d\t" id) var.crossed;
   Printf.printf "\nFin de la variable\n";;
 
-
-
 let print_tab_var = fun tab_var ->
   Array.iter print_var tab_var;;
 
+
 let () = 
-  let matrice = read_grid "grille_test.txt" in
+  (* main *)
+  let dico = Dico_load.dico_array "dico.txt" 2 10 in
+  let matrice = get_grid "grille_test.txt" in
   let tab_words = gen_tab_words matrice in
   print_tab_words tab_words;
   Printf.printf "Fini\n";
-  let tab_var = var_table tab_words in 
-  print_tab_var tab_var;;
+  let tab_var = var_table tab_words dico in 
+  print_tab_var tab_var;
+;;
