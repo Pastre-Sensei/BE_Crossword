@@ -1,7 +1,5 @@
 (* Charge le dictionnaire en fonction des mots rencontrés *)
 
-let file = "dico.txt";;
-
 type nlist =
     {mutable taille : int;
       mutable liste : string list};;
@@ -34,12 +32,12 @@ let close_file = fun channel ->
     Printf.printf "%s ne se ferme pas bien\n" "dico.txt";
     raise exc;;
 
-let gen_tableau = fun taille_max ->
+let gen_tableau = fun taille_max -> (* Génère un tableau de nlistes *)
   let tableau = (Array.init (taille_max +1) (fun i -> empty)) in
   tableau;;
 
 
-let read_file = fun channel tableau taille_min ->
+let read_file = fun channel tableau taille_min -> (* Charge le tableau de nlistes avec les mots du dictionnaire *)
   let rec encore = fun () ->
       begin
         let l = input_line channel in
@@ -52,7 +50,18 @@ let read_file = fun channel tableau taille_min ->
           end;
         encore ()
       end in
-  try encore () with End_of_file -> close_file channel;;
+  try encore () with End_of_file -> close_file channel;
+    tableau;;
+
+
+let dico_array = fun filename lmin lmax -> (* Exporte le tableau de nlistes contenant les mots chargés du dictionnaire *)
+  let channel = open_file filename in
+  let dico_table = gen_tableau lmax in
+  read_file channel dico_table lmin;;
+
+
+
+
       
 let print_tableau = fun tableau ->
   for i=0 to (Array.length tableau)-1 do
@@ -66,12 +75,12 @@ let printf_nlist = fun nlist ->
       
 let main = fun () ->
   Printf.printf "Coucou\n";
-  let channel = open_file file in
+  (* let channel = open_file "dico.txt" in *)
   Printf.printf "Channel open\n";
-  let tableau1 = gen_tableau 10 in
+  (* let tableau1 = gen_tableau 10 in *)
   Printf.printf "Blabla\n";
-  read_file channel tableau1 2;
+  let tableau2 = dico_array "dico.txt" 2 10 in
   Printf.printf "Fini\n";
-  print_tableau tableau1;
-  printf_nlist tableau1.(2);;
+  print_tableau tableau2;
+  printf_nlist tableau2.(2);;
 main ();;
