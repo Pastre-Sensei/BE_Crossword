@@ -182,3 +182,20 @@ let filtrage = fun (var : Grid.variable) (var_table : Grid.variable array) grid 
     if cross_array.(i).domain.taille <= 0 then flag := false
   done;
   !flag;;
+
+
+
+let () =
+  Printf.printf "\n\n *********************** Propagation.ml **********************\n";
+  let dico = Dico_load.dico_array "dico.txt" 2 10 in
+  let grid = Grid.get_grid "grille_test.txt" in
+  let vars = Grid.get_vars grid dico in
+  let var = vars.(0) in
+  instanciation var grid vars (List.hd var.domain.liste);
+  Array.iter (fun str -> Printf.printf "%s\n" str) grid;
+  Printf.printf "Domaine de la variable : taille = %d\t" var.domain.taille;
+  List.iter (fun str -> Printf.printf "%s\t" str) var.domain.liste;
+  
+  Printf.printf "On arrive au bout !\n"
+  
+;;
