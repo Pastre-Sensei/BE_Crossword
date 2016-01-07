@@ -90,47 +90,43 @@ let instanciation = fun (var : Grid.variable) grid (var_table : Grid.variable ar
 
 
 
+let convert = fun grid (var : Grid.variable) -> (* Extrait la chaine de caractère de la grille pour restreindre le domaine*)
+  let str = ref "" in
 
-
-
-
-  
-  
-
+  if var.Grid.word.vertical then  (* Vertical *) begin
+    let col = var.Grid.word.ligne_colonne and debut = var.Grid.word.debut and longueur = var.Grid.word.longueur in
+    for j=0 to (longueur-1) do
+      str := String.concat !str [String.make 1 grid.(debut + j).[col]]
+    done
+  end
+  else (* Horizontal *)
+    begin
+      let ligne = var.Grid.word.ligne_colonne and debut = var.Grid.word.debut and longueur = var.Grid.word.longueur in
+      for i=0 to (longueur-1) do
+        str := String.concat !str [String.make 1 grid.(ligne).[debut + i]]
+      done;
+    end;
+  !str;;
 
 
 
 
 
 let restr_domain = fun grid (var : Grid.variable) -> (* Reduit le domaine de la variable parametre par rapport à ce qu'il y a dans la grille *)
-  if var.Grid.word.vertical then begin
-    let col = var.Grid.word.ligne_colonne and debut = var.Grid.word.debut and longueur = var.Grid.word.longueur in
-    let filtered =
-      List.filter
-        (fun mot ->
-          try
-            for j=0 to longueur -1 do
-              if grid.(debut + j).[col] <> '_' && mot.[j] <> grid.(debut + j).[col] then raise Exit
-            done;
-            true
-          with Exit -> false)
-        var.domain.liste in
-  end
-  else begin
-    let ligne = var.Grid.word.ligne_colonne and debut = var.Grid.word.debut and longueur = var.Grid.word.longueur in
-    let rec list_reduc_h = fun domain_list ->
-      match domain_list with
-        [] -> var.domain <- !new_domain
-      | mot :: reste ->
-          for i=0 to longueur -1 do
-            if grid.(ligne).[debut + i] = '_' || mot.[i] = grid.(ligne).[debut + i] then begin
-              new_domain := Dico_load.add_nlist mot !new_domain;
-              list_reduc_h reste;
-            end
-            else list_reduc_h reste
+  let gmot = convert grid var in
+  let longueur = String.length gmot in
+  let filtered =
+    List.filter
+      (fun mot ->
+        try
+          for j=0 to longueur-1 do
+            if gmot.[j] <> '_' && mot.[j] <> gmot.[j] then raise Exit
           done;
-    in list_reduc_h var.domain.liste
-  end;;
+          true
+        with Exit -> false)
+      var.domain.liste in
+  let new_dom = Dico_load.create filtered in
+  var.domain <- new_dom;;
 
 
 
@@ -162,26 +158,27 @@ let restr_domain = fun grid (var : Grid.variable) -> (* Reduit le domaine de la 
 (*   in filtre_encore var_liste *)
 
 
-(* let var_liste = fun tab_var id_liste -> *)
-(*   let new_list = ref [] in *)
-(*   let rec encore = fun tampon_list -> *)
-(*     match tampon_list with  *)
-(*       elt::reste -> begin new_liste := tab_var.(elt)::new_liste; encore reste end *)
-(*     | [] -> !new_list *)
-(*   in encore id_liste;; *)
+let var_liste = fun tab_var id_liste ->
+  let new_list = ref [] in
+  let rec encore = fun tampon_list ->
+    match tampon_list with
+      elt::reste -> begin new_list := tab_var.(elt)::(!new_list); encore reste end
+    | [] -> !new_list
+  in encore id_liste;;
 
 
 
 
 let filtrage = fun (var : Grid.variable) (var_table : Grid.variable array) grid ->
+  
+  let id_cross = var.crossed in
+  let cross = var_liste var_table id_cross in
+  List.iter (restr_domain grid) cross;
 
-  restr_domain grid var;
-
-  let id_crossed = var.crossed in
-  let id_array = Array.of_list id_crossed in
+  let cross_array = Array.of_list cross in
   let flag = ref true in
   
-  for i=0 to Array.length id_array do
-    if var_table.(id_array.(i)).domain.taille <= 0 then flag := false
+  for i=0 to Array.length cross_array do
+    if cross_array.(i).domain.taille <= 0 then flag := false
   done;
   !flag
