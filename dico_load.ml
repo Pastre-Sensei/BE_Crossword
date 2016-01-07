@@ -45,9 +45,10 @@ let read_file = fun channel tableau taille_min ->
         let l = input_line channel in
         let length = String.length l in
         let taille_max = Array.length tableau in
-        if length <= taille_max && length >= taille_min then
+        if length <= (taille_max-1) && length >= taille_min then
           begin
-            Array.set tableau length (add_nlist l tableau.(length));
+            let new_domain = add_nlist l tableau.(length) in
+            tableau.(length) <- new_domain;
           end;
         encore ()
       end in
@@ -64,11 +65,13 @@ let printf_nlist = fun nlist ->
   List.iter (fun x -> Printf.printf "%s\n" x) nlist.liste;;
       
 let main = fun () ->
+  Printf.printf "Coucou\n";
   let channel = open_file file in
-  (*let (min_word, max_word) = Grid.minmax_word () in*)
-  let tableau1 = gen_tableau 18 in
+  Printf.printf "Channel open\n";
+  let tableau1 = gen_tableau 10 in
+  Printf.printf "Blabla\n";
   read_file channel tableau1 2;
   Printf.printf "Fini\n";
   print_tableau tableau1;
-  printf_nlist tableau1.(5);;
+  printf_nlist tableau1.(2);;
 main ();;
