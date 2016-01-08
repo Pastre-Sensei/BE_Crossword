@@ -181,7 +181,7 @@ let print_crossed = fun crossed ->
   List.iteri (fun i id -> Printf.printf "id %d : %d\n" i id) crossed;;
 
 let print_var = fun (var : variable) ->
-  Printf.printf "Var  Mot :  {vertical : %B; ligne_col : %d; debut : %d; longueur : %d}\n *******\n" var.word.vertical var.word.ligne_colonne var.word.debut var.word.longueur;
+  Printf.printf "\n***Var %d***\n Mot :  {vertical : %B; ligne_col : %d; debut : %d; longueur : %d}\n *******\n" var.id var.word.vertical var.word.ligne_colonne var.word.debut var.word.longueur;
   Printf.printf "Taille domaine : %d\n" var.domain.Dico_load.taille;
   Printf.printf "Crossed : \t";
   List.iter (fun id -> Printf.printf "%d\t" id) var.crossed;

@@ -81,6 +81,6 @@ let main = fun () ->
   Printf.printf "Blabla\n";
   let tableau2 = dico_array "dico.txt" 2 10 in
   Printf.printf "Fini\n";
-  print_tableau tableau2;
-  printf_nlist tableau2.(2);;
+  print_tableau tableau2;;
+ (* printf_nlist tableau2.(2);; *)
 main ();;

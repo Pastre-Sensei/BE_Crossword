@@ -34,43 +34,6 @@ let erase_from_crossed = fun (var : Grid.variable) (var_table : Grid.variable ar
 
 
 
-  
-(* let erase_from_crossed = fun var1 var var_table  -> (\* Enleve la variable instanciee des listes crossed des variables croisees *\) *)
-(*   let new_crossed = ref [] in *)
-(*   let remaining_list = ref var1.crossed in *)
-(*   let crossed_id = ref var.crossed in *)
-(*   let rec erase_encore = fun () -> *)
-(*     match !remaining_list with *)
-(*       [] -> (var1.crossed <- !new_crossed) *)
-(*     | id :: remaining -> *)
-(*         if id = var.id then *)
-(*           begin *)
-(*             new_crossed := !new_crossed :: remaining; *)
-(*             remaining_list := []; *)
-(*             erase_encore (); *)
-(*           end *)
-(*         else *)
-(*           begin *)
-(*             new_crossed := id :: !new_crossed; *)
-(*             remaining_list := remaining; *)
-(*             erase_encore (); *)
-(*           end *)
-(*   and return_crossed = fun () -> *)
-(*       (\* Renvoit la liste des variables croisees a mettre a jour *\) *)
-(*     let crossed_words = ref [] in *)
-(*     match !crossed_id with *)
-(*       [] -> !crossed_words *)
-(*     | id :: remaining -> *)
-(*         begin *)
-(*           crossed_id := remaining; *)
-(*           crossed_words := var_table.(id) :: !crossed_words; (\* Dependra de l'implementation de var_table *\) *)
-(*           erase_encore var_table.(id); (\* Appel a erase_from_crossed *\) *)
-(*           return_crossed (); *)
-(*         end *)
-(*   in *)
-(*   () *)
-
-
 
 (* ************************************************** La vrai fonction ************************************************ *)
 
@@ -96,16 +59,17 @@ let convert = fun grid (var : Grid.variable) -> (* Extrait la chaine de caractè
   if var.Grid.word.vertical then  (* Vertical *) begin
     let col = var.Grid.word.ligne_colonne and debut = var.Grid.word.debut and longueur = var.Grid.word.longueur in
     for j=0 to (longueur-1) do
-      str := String.concat !str [String.make 1 grid.(debut + j).[col]]
+      str := String.concat "" [!str; String.make 1 grid.(debut + j).[col]];
     done
   end
   else (* Horizontal *)
     begin
       let ligne = var.Grid.word.ligne_colonne and debut = var.Grid.word.debut and longueur = var.Grid.word.longueur in
       for i=0 to (longueur-1) do
-        str := String.concat !str [String.make 1 grid.(ligne).[debut + i]]
+        str := String.concat "" [!str; String.make 1 grid.(ligne).[debut + i]];
       done;
     end;
+  Printf.printf "Chaine : %s\n" !str;
   !str;;
 
 
@@ -130,34 +94,6 @@ let restr_domain = fun grid (var : Grid.variable) -> (* Reduit le domaine de la 
 
 
 
-
-
-
-(* let filtre = fun (var : Grid.variable) (var_table : Grid.variable array) grid -> (\* state = tableau des var*\) *)
-(*   let new_tab = var_table in *)
-(*   let var_liste = var.crossed in *)
-  
-(*   let rec filtre_encore = fun (liste_var : int list) -> *)
-(*     match liste_var with *)
-(*       [] -> () *)
-(*     | id::remaining -> *)
-(*         restr_domain grid var_table.(id); *)
-(*         match var.domain.taille with *)
-(*           0 -> raise Dico_load.Empty *)
-(*         (\*| 1 -> begin*\) *)
-(*           (\*  match var.domain.liste with*\) *)
-(*           (\*    [] -> failwith "domaine.liste vide"*\) *)
-(*           (\*  | elt::reste ->  *\) *)
-(*          (\*       let new_crossed = instanciation var elt grid var_table in (\* Garder un oeil là dessus *\) *\) *)
-(*         (\*        filter (Array.to_list var_table); *\) *)
-(*        (\* end*\) *)
-(*         | _ -> *)
-(*             begin *)
-(*                 new_tab.(var.id) <- var; *)
-(*             end *)
-(*   in filtre_encore var_liste *)
-
-
 let var_liste = fun tab_var id_liste ->
   let new_list = ref [] in
   let rec encore = fun tampon_list ->
@@ -178,7 +114,7 @@ let filtrage = fun (var : Grid.variable) (var_table : Grid.variable array) grid 
   let cross_array = Array.of_list cross in
   let flag = ref true in
   
-  for i=0 to Array.length cross_array do
+  for i=0 to (Array.length cross_array)-1 do
     if cross_array.(i).domain.taille <= 0 then flag := false
   done;
   !flag;;
@@ -190,12 +126,30 @@ let () =
   let dico = Dico_load.dico_array "dico.txt" 2 10 in
   let grid = Grid.get_grid "grille_test.txt" in
   let vars = Grid.get_vars grid dico in
-  let var = vars.(0) in
+  let var = vars.(3) in
   instanciation var grid vars (List.hd var.domain.liste);
   Array.iter (fun str -> Printf.printf "%s\n" str) grid;
   Printf.printf "Domaine de la variable : taille = %d\t" var.domain.taille;
   List.iter (fun str -> Printf.printf "%s\t" str) var.domain.liste;
+  let crossed = var.crossed in
+  List.iter (
+  fun id -> 
+    begin 
+      Printf.printf "\nVar %d : \t" id;
+      List.iter (fun id -> Printf.printf "%d\t" id) vars.(id).crossed
+    end)
+    crossed;
   
-  Printf.printf "On arrive au bout !\n"
+  let flag = filtrage var vars grid in
+  Printf.printf "\nfiltrage : %b\n" flag;
+  List.iter (fun id -> Printf.printf "Var %d taille domaine %d\n" id vars.(id).domain.taille) var.crossed;
+
+  let var2 = vars.(2) in
+  instanciation var2 grid vars (List.hd var2.domain.liste);
+  Array.iter (fun str -> Printf.printf "%s\n" str) grid;
+  let flag2 = filtrage var2 vars grid in
+  Printf.printf "\nfiltrage : %b\n" flag2;
+  List.iter (fun id -> Printf.printf "Var %d taille domaine %d\n" id vars.(id).domain.taille) var2.crossed;
+  Printf.printf "\nOn arrive au bout !\n"
   
 ;;
