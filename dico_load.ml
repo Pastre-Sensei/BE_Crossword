@@ -83,4 +83,4 @@ let main = fun () ->
   Printf.printf "Fini\n";
   print_tableau tableau2;;
  (* printf_nlist tableau2.(2);; *)
-main ();;
+(* main ();; *)

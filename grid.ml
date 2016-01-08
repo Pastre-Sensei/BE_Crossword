@@ -191,13 +191,13 @@ let print_tab_var = fun tab_var ->
   Array.iter print_var tab_var;;
 
 
-let () = 
-  (* main *)
-  let dico = Dico_load.dico_array "dico.txt" 2 10 in
-  let matrice = get_grid "grille_test.txt" in
-  let tab_words = gen_tab_words matrice in
-  print_tab_words tab_words;
-  Printf.printf "Fini\n";
-  let tab_var = var_table tab_words dico in 
-  print_tab_var tab_var;
-;;
+(* let () =  *)
+(*   (\* main *\) *)
+(*   let dico = Dico_load.dico_array "dico.txt" 2 10 in *)
+(*   let matrice = get_grid "grille_test.txt" in *)
+(*   let tab_words = gen_tab_words matrice in *)
+(*   print_tab_words tab_words; *)
+(*   Printf.printf "Fini\n"; *)
+(*   let tab_var = var_table tab_words dico in  *)
+(*   print_tab_var tab_var; *)
+(* ;; *)
