@@ -86,9 +86,9 @@ let bt = fun vars grid solution ->
 let () =
   Printf.printf "******************* BACKTRACK.ml*******************\n";
   let dico = Dico_load.dico_array "dico.txt" 2 10 in
-  let grid = Grid.get_grid "grille_test_3.txt" in
+  let grid = Grid.get_grid "grille_ok.txt" in
   let vars = Grid.get_vars grid dico in
   let boul = bt vars grid [] in
-  Printf.printf "Resultat : %b\nOVER" boul;
+  Printf.printf "Resultat : %b\nOVER\n" boul;
   
   

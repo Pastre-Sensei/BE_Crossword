@@ -62,14 +62,17 @@ let gen_tab_words = fun matrice -> (* Genere le tableau de mots *)
       if char = '_' then 
         begin
           incr compteur;
-          if j = j_length && !compteur >=2 then  (* Gere les blancs de fin de ligne *)
-            begin
-              let new_word = {vertical=false; ligne_colonne=i; debut=(j - !compteur +1); longueur= (!compteur)} in
-              word_list := new_word::!word_list;
-              if !compteur < !min_length then min_length := !compteur;
-              if !compteur > !max_length then max_length := !compteur;
+          if j = j_length then  (* Gere les blancs de fin de ligne *)
+            if !compteur >= 2 then
+              begin
+                let new_word = {vertical=false; ligne_colonne=i; debut=(j - !compteur +1); longueur= (!compteur)} in
+                word_list := new_word::!word_list;
+                if !compteur < !min_length then min_length := !compteur;
+                if !compteur > !max_length then max_length := !compteur;
+                compteur := 0;
+              end (* Si ce n'est pas en fin de ligne, on incrémente le compteur de l'eventuel mot trouvé *)
+            else
               compteur := 0;
-            end; (* Si ce n'est pas en fin de ligne, on incrémente le compteur de l'eventuel mot trouvé *)
         end        
       else
         if char = '*' then
@@ -191,13 +194,13 @@ let print_tab_var = fun tab_var ->
   Array.iter print_var tab_var;;
 
 
-(* let () =  *)
+(* let () = *)
 (*   (\* main *\) *)
 (*   let dico = Dico_load.dico_array "dico.txt" 2 10 in *)
-(*   let matrice = get_grid "grille_test.txt" in *)
+(*   let matrice = get_grid "grille_test_3.txt" in *)
 (*   let tab_words = gen_tab_words matrice in *)
 (*   print_tab_words tab_words; *)
 (*   Printf.printf "Fini\n"; *)
-(*   let tab_var = var_table tab_words dico in  *)
+(*   let tab_var = var_table tab_words dico in *)
 (*   print_tab_var tab_var; *)
 (* ;; *)

@@ -2,24 +2,32 @@ open Grid
 open Dico_load
 
 let grid_add = fun var chaine grid -> (* Recopie la chaine instanciee dans la grille *)
+  Printf.printf "Grid_add\n";
   if not var.Grid.word.Grid.vertical then (* horizontal *)
     begin
+      Printf.printf "Horizontal !\n";
       let x = var.Grid.word.Grid.ligne_colonne in
       let y = var.Grid.word.Grid.debut in
+      Printf.printf "flag1\n";
       for i=0 to var.Grid.word.longueur-1 do
         grid.(x).[y+i] <- chaine.[i];
       done
+       (* Printf.printf "flag2\n"; *)
     end
   else
     begin (* vertical *)
+      Printf.printf "Vertical !\n";
       let y = var.Grid.word.ligne_colonne in
       let x = var.Grid.word.debut in
+      Printf.printf "flag3\n";
       for i=0 to var.Grid.word.longueur -1 do
         grid.(x+i).[y] <- chaine.[i];
       done
+        (* Printf.printf "flag4\n"; *)
     end;;
-
+    
 let filter_crossed = fun id (tab_var : Grid.variable array) id_var-> (* Fonction bas niveau utilisée dans un List.iter : permet d'enlever un mot instancié des crossed *)
+  Printf.printf "Filter_crossed\n";
   let new_crossed = ref [] in
   List.iter (fun id1 -> if not (id1=id) then new_crossed := (id1 :: !new_crossed)) tab_var.(id_var).crossed;
   tab_var.(id_var).crossed <- !new_crossed;; (* ***** Met à jour le tableau ******** *)
@@ -27,7 +35,7 @@ let filter_crossed = fun id (tab_var : Grid.variable array) id_var-> (* Fonction
 
 
 let erase_from_crossed = fun (var : Grid.variable) (var_table : Grid.variable array) ->
-
+  Printf.printf "Erase_from_crossed\n";
   List.iter (filter_crossed var.id var_table) var.crossed;;
   
 
@@ -38,7 +46,7 @@ let erase_from_crossed = fun (var : Grid.variable) (var_table : Grid.variable ar
 (* ************************************************** La vrai fonction ************************************************ *)
 
 let instanciation = fun (var : Grid.variable) grid (var_table : Grid.variable array) chaine -> (*Pour rendre vivant : \r%d%! *)
-  
+  Printf.printf "*******************Instanciation************************\n";
   grid_add var chaine grid;
   
   var.domain <- Dico_load.add_nlist chaine Dico_load.empty; (* Reduit le domaine de la variable au seul mot instancie *)
