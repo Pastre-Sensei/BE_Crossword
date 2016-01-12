@@ -9,4 +9,3 @@ val dico_array : string -> int -> int -> nlist array (* La fonction utile *)
 
 val print_tableau : nlist array -> unit
 val printf_nlist : nlist -> unit
-val main : unit -> unit

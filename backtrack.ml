@@ -57,12 +57,15 @@ let bt = fun vars grid solution ->
             (fun str ->
               let state_local = copy state in
               Printf.printf "mot a instancier : %s\n" str;
-              Printf.printf "\nState copie : %s ! \n" state_local.grid.(0);
               Propagation.instanciation var state_local.grid state_local.vars str;
               Printf.printf "Instanciation OK\n";
               Printf.printf "nombre de bt : %d\n" !nbre_backtrack;
+              for k = 0 to (Array.length state_local.grid) -1 do
+                Printf.printf "%s\n" state_local.grid.(k);
+              done;
               if Propagation.filtrage var state_local.vars state_local.grid then (* le mot instancié est bon *)
                 begin
+                  Printf.printf "filtrage OK !\n";
                   state_local.vars.(index).instance <- true;
                   Printf.printf "variable instanciee : %b\n" state_local.vars.(index).instance;
                   for k = 0 to (Array.length state_local.grid) -1 do
