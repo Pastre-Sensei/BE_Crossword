@@ -57,7 +57,6 @@ let bt = fun vars grid solution ->
             (fun str ->
               let state_local = copy state in
               Printf.printf "mot a instancier : %s\n" str;
-              Printf.printf "\nState copie : %s ! \n" state_local.grid.(0);
               Propagation.instanciation var state_local.grid state_local.vars str;
               Printf.printf "Instanciation OK\n";
               Printf.printf "nombre de bt : %d\n" !nbre_backtrack;
@@ -66,6 +65,7 @@ let bt = fun vars grid solution ->
               done;
               if Propagation.filtrage var state_local.vars state_local.grid then (* le mot instancié est bon *)
                 begin
+                  Printf.printf "filtrage OK !\n";
                   state_local.vars.(index).instance <- true;
                   Printf.printf "variable instanciee : %b\n" state_local.vars.(index).instance;
                   if bt_rec state_local  then raise Exit
@@ -89,6 +89,6 @@ let () =
   let grid = Grid.get_grid "grille_ok.txt" in
   let vars = Grid.get_vars grid dico in
   let boul = bt vars grid [] in
-  Printf.printf "Resultat : %b\nOVER" boul;
+  Printf.printf "Resultat : %b\nOVER\n" boul;
   
   

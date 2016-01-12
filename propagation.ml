@@ -18,7 +18,7 @@ let grid_add = fun var chaine grid -> (* Recopie la chaine instanciee dans la gr
         grid.(x+i).[y] <- chaine.[i];
       done
     end;;
-
+    
 let filter_crossed = fun id (tab_var : Grid.variable array) id_var-> (* Fonction bas niveau utilisée dans un List.iter : permet d'enlever un mot instancié des crossed *)
   let new_crossed = ref [] in
   List.iter (fun id1 -> if not (id1=id) then new_crossed := (id1 :: !new_crossed)) tab_var.(id_var).crossed;
@@ -27,7 +27,6 @@ let filter_crossed = fun id (tab_var : Grid.variable array) id_var-> (* Fonction
 
 
 let erase_from_crossed = fun (var : Grid.variable) (var_table : Grid.variable array) ->
-
   List.iter (filter_crossed var.id var_table) var.crossed;;
   
 
@@ -38,7 +37,6 @@ let erase_from_crossed = fun (var : Grid.variable) (var_table : Grid.variable ar
 (* ************************************************** La vrai fonction ************************************************ *)
 
 let instanciation = fun (var : Grid.variable) grid (var_table : Grid.variable array) chaine -> (*Pour rendre vivant : \r%d%! *)
-  
   grid_add var chaine grid;
   
   var.domain <- Dico_load.add_nlist chaine Dico_load.empty; (* Reduit le domaine de la variable au seul mot instancie *)
@@ -121,35 +119,35 @@ let filtrage = fun (var : Grid.variable) (var_table : Grid.variable array) grid 
 
 
 
-(* let () = *)
-(*   Printf.printf "\n\n *********************** Propagation.ml **********************\n"; *)
-(*   let dico = Dico_load.dico_array "dico.txt" 2 10 in *)
-(*   let grid = Grid.get_grid "grille_test.txt" in *)
-(*   let vars = Grid.get_vars grid dico in *)
-(*   let var = vars.(3) in *)
-(*   instanciation var grid vars (List.hd var.domain.liste); *)
-(*   Array.iter (fun str -> Printf.printf "%s\n" str) grid; *)
-(*   Printf.printf "Domaine de la variable : taille = %d\t" var.domain.taille; *)
-(*   List.iter (fun str -> Printf.printf "%s\t" str) var.domain.liste; *)
-(*   let crossed = var.crossed in *)
-(*   List.iter ( *)
-(*   fun id ->  *)
-(*     begin  *)
-(*       Printf.printf "\nVar %d : \t" id; *)
-(*       List.iter (fun id -> Printf.printf "%d\t" id) vars.(id).crossed *)
-(*     end) *)
-(*     crossed; *)
+let () =
+  Printf.printf "\n\n *********************** Propagation.ml **********************\n";
+  let dico = Dico_load.dico_array "dico.txt" 2 10 in
+  let grid = Grid.get_grid "grille_ok.txt" in
+  let vars = Grid.get_vars grid dico in
+  let var = vars.(0) in
+  instanciation var grid vars (List.hd var.domain.liste);
+  Array.iter (fun str -> Printf.printf "%s\n" str) grid;
+  Printf.printf "Domaine de la variable : taille = %d\t" var.domain.taille;
+  List.iter (fun str -> Printf.printf "%s\t" str) var.domain.liste;
+  let crossed = var.crossed in
+  List.iter (
+  fun id ->
+    begin
+      Printf.printf "\nVar %d : \t" id;
+      List.iter (fun id -> Printf.printf "%d\t" id) vars.(id).crossed
+    end)
+    crossed;
   
-(*   let flag = filtrage var vars grid in *)
-(*   Printf.printf "\nfiltrage : %b\n" flag; *)
-(*   List.iter (fun id -> Printf.printf "Var %d taille domaine %d\n" id vars.(id).domain.taille) var.crossed; *)
+  let flag = filtrage var vars grid in
+  Printf.printf "\nfiltrage : %b\n" flag;
+  List.iter (fun id -> Printf.printf "Var %d taille domaine %d\n" id vars.(id).domain.taille) var.crossed;
 
-(*   let var2 = vars.(2) in *)
-(*   instanciation var2 grid vars (List.hd var2.domain.liste); *)
-(*   Array.iter (fun str -> Printf.printf "%s\n" str) grid; *)
-(*   let flag2 = filtrage var2 vars grid in *)
-(*   Printf.printf "\nfiltrage : %b\n" flag2; *)
-(*   List.iter (fun id -> Printf.printf "Var %d taille domaine %d\n" id vars.(id).domain.taille) var2.crossed; *)
-(*   Printf.printf "\nOn arrive au bout !\n" *)
+  let var2 = vars.(2) in
+  instanciation var2 grid vars (List.hd var2.domain.liste);
+  Array.iter (fun str -> Printf.printf "%s\n" str) grid;
+  let flag2 = filtrage var2 vars grid in
+  Printf.printf "\nfiltrage : %b\n" flag2;
+  List.iter (fun id -> Printf.printf "Var %d taille domaine %d\n" id vars.(id).domain.taille) var2.crossed;
+  Printf.printf "\nOn arrive au bout !\n"
   
-(* ;; *)
+;;

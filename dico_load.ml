@@ -73,14 +73,15 @@ let printf_nlist = fun nlist ->
   Printf.printf "nlist de taille %d\n" nlist.taille;
   List.iter (fun x -> Printf.printf "%s\n" x) nlist.liste;;
       
-let main = fun () ->
-  Printf.printf "Coucou\n";
-  (* let channel = open_file "dico.txt" in *)
-  Printf.printf "Channel open\n";
-  (* let tableau1 = gen_tableau 10 in *)
-  Printf.printf "Blabla\n";
-  let tableau2 = dico_array "dico.txt" 2 10 in
-  Printf.printf "Fini\n";
-  print_tableau tableau2;;
- (* printf_nlist tableau2.(2);; *)
-(* main ();; *)
+(* let main = fun () -> *)
+  (* Printf.printf "Coucou\n"; *)
+(*   (\* let channel = open_file "dico.txt" in *\) *)
+(*   Printf.printf "Channel open\n"; *)
+(*   (\* let tableau1 = gen_tableau 10 in *\) *)
+(*   Printf.printf "Blabla\n"; *)
+(*   let tableau2 = dico_array "dico.txt" 2 10 in *)
+(*   Printf.printf "Fini\n"; *)
+(*   print_tableau tableau2;; *)
+(*  (\* printf_nlist tableau2.(2);; *\) *)
+(* (\* main ();; *\) *)
+
