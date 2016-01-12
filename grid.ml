@@ -189,24 +189,28 @@ let get_vars = fun grid dico ->
 let print_crossed = fun crossed ->
   List.iteri (fun i id -> Printf.printf "id %d : %d\n" i id) crossed;;
 
-let print_var = fun (var : variable) ->
-  Printf.printf "\n***Var %d***\n Mot :  {vertical : %B; ligne_col : %d; debut : %d; longueur : %d}\n *******\n" var.id var.word.vertical var.word.ligne_colonne var.word.debut var.word.longueur;
-  Printf.printf "Taille domaine : %d\n" var.domain.Dico_load.taille;
-  Printf.printf "Crossed : \t";
-  List.iter (fun id -> Printf.printf "%d\t" id) var.crossed;
-  Printf.printf "\nFin de la variable\n";;
+let print_var = fun ch (var : variable) ->
+  Printf.fprintf ch "\n***Var %d***\n Mot :  {vertical : %B; ligne_col : %d; debut : %d; longueur : %d}\n *******\n" var.id var.word.vertical var.word.ligne_colonne var.word.debut var.word.longueur;
+  Printf.fprintf ch "Taille domaine : %d\n" var.domain.Dico_load.taille;
+  Printf.fprintf ch "dom : %a\n" Dico_load.fprint_domain var.domain;
+  Printf.fprintf ch "Crossed : \t";
+  List.iter (fun id -> Printf.fprintf ch "%d\t" id) var.crossed;
+  Printf.fprintf ch "\nFin de la variable\n";;
 
-let print_tab_var = fun tab_var ->
-  Array.iter print_var tab_var;;
+let print_tab_var = fun ch tab_var ->
+  Array.iter
+    (fun v -> Printf.fprintf ch "%a\n" print_var v)
+    tab_var;;
 
 
 let () =
   (* main *)
+  let gridfile = Sys.argv.(1) in
   let dico = Dico_load.dico_array "dico.txt" 2 10 in
-  let matrice = get_grid "grille_ok.txt" in
+  let matrice = get_grid gridfile in
   let tab_words = gen_tab_words matrice in
   print_tab_words tab_words;
   Printf.printf "Fini\n";
   let tab_var = var_table tab_words dico in
-  print_tab_var tab_var;
+  print_tab_var stdout tab_var;
 ;;

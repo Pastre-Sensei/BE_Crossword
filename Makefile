@@ -1,7 +1,7 @@
 # Custom part
-+SOURCES = dico_load.ml grid.ml propagation.ml backtrack.ml
+SOURCES = dico_load.ml grid.ml propagation.ml backtrack.ml
 #LIBS =
-TARGET = executable
+TARGET = bt.out
 
 # Generic part
 OCAMLC   = ocamlc -g
@@ -14,6 +14,8 @@ byte: $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(OCAMLC) -o $@ $^
+
+.SUFFIXES: .ml .mli .cmo .cmi .cmx
 
 %.cmi: %.mli
 	$(OCAMLC) $<

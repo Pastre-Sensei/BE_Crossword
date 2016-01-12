@@ -6,6 +6,8 @@ type nlist =
 
 exception Empty
 
+let fprint_domain = fun ch d -> List.iter (Printf.fprintf ch "%s ") d.liste
+
 let empty = {taille=0; liste = []};;
 
 let create = fun l -> {taille = List.length l; liste = l}

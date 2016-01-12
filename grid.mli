@@ -13,3 +13,4 @@ type variable = {
 }
 val get_grid : string -> string array
 val get_vars : string array -> Dico_load.nlist array -> variable array
+val print_tab_var : out_channel -> variable array -> unit
