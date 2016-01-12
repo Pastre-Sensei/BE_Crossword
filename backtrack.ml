@@ -61,13 +61,13 @@ let bt = fun vars grid solution ->
               Propagation.instanciation var state_local.grid state_local.vars str;
               Printf.printf "Instanciation OK\n";
               Printf.printf "nombre de bt : %d\n" !nbre_backtrack;
+              for k = 0 to (Array.length state_local.grid) -1 do
+                Printf.printf "%s\n" state_local.grid.(k);
+              done;
               if Propagation.filtrage var state_local.vars state_local.grid then (* le mot instancié est bon *)
                 begin
                   state_local.vars.(index).instance <- true;
                   Printf.printf "variable instanciee : %b\n" state_local.vars.(index).instance;
-                  for k = 0 to (Array.length state_local.grid) -1 do
-                    Printf.printf "%s\n" state_local.grid.(k);
-                  done;
                   if bt_rec state_local  then raise Exit
                   
                 end
@@ -86,7 +86,7 @@ let bt = fun vars grid solution ->
 let () =
   Printf.printf "******************* BACKTRACK.ml*******************\n";
   let dico = Dico_load.dico_array "dico.txt" 2 10 in
-  let grid = Grid.get_grid "grille_test_3.txt" in
+  let grid = Grid.get_grid "grille_ok.txt" in
   let vars = Grid.get_vars grid dico in
   let boul = bt vars grid [] in
   Printf.printf "Resultat : %b\nOVER" boul;

@@ -62,14 +62,18 @@ let gen_tab_words = fun matrice -> (* Genere le tableau de mots *)
       if char = '_' then 
         begin
           incr compteur;
-          if j = j_length && !compteur >=2 then  (* Gere les blancs de fin de ligne *)
-            begin
-              let new_word = {vertical=false; ligne_colonne=i; debut=(j - !compteur +1); longueur= (!compteur)} in
-              word_list := new_word::!word_list;
-              if !compteur < !min_length then min_length := !compteur;
-              if !compteur > !max_length then max_length := !compteur;
-              compteur := 0;
-            end; (* Si ce n'est pas en fin de ligne, on incrémente le compteur de l'eventuel mot trouvé *)
+          if j = j_length then
+            if !compteur >=2 then  (* Gere les blancs de fin de ligne *)
+              begin
+                let new_word = {vertical=false; ligne_colonne=i; debut=(j - !compteur +1); longueur= (!compteur)} in
+                word_list := new_word::!word_list;
+                if !compteur < !min_length then min_length := !compteur;
+                if !compteur > !max_length then max_length := !compteur;
+                compteur := 0;
+              end (* Si ce n'est pas en fin de ligne, on incrémente le compteur de l'eventuel mot trouvé *)
+            else
+              compteur:=0;
+        
         end        
       else
         if char = '*' then
