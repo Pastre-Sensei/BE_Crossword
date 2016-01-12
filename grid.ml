@@ -44,6 +44,14 @@ let get_grid = fun file_path -> (* Genere la matrice à partir du fichier lu *)
     let rliste_lignes = List.rev !liste_lignes in
     Array.of_list rliste_lignes
 
+
+
+
+let print_tab_words = fun tab_words ->
+  Array.iteri (fun i word -> Printf.printf "Mot no %d : {vertical : %B; ligne_col : %d; debut : %d; longueur : %d}\n" i word.vertical word.ligne_colonne word.debut word.longueur) tab_words;;
+
+
+
         
 let gen_tab_words = fun matrice -> (* Genere le tableau de mots *)
   Printf.printf "Gen_tab_words appelé\n";
@@ -177,8 +185,6 @@ let get_vars = fun grid dico ->
 
 (* **** Printf **** *)    
 
-let print_tab_words = fun tab_words ->
-  Array.iteri (fun i word -> Printf.printf "Mot no %d : {vertical : %B; ligne_col : %d; debut : %d; longueur : %d}\n" i word.vertical word.ligne_colonne word.debut word.longueur) tab_words;;
 
 let print_crossed = fun crossed ->
   List.iteri (fun i id -> Printf.printf "id %d : %d\n" i id) crossed;;
