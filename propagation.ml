@@ -76,18 +76,26 @@ let convert = fun grid (var : Grid.variable) -> (* Extrait la chaine de caractè
 
 let restr_domain = fun grid (var : Grid.variable) -> (* Reduit le domaine de la variable parametre par rapport à ce qu'il y a dans la grille *)
   let gmot = convert grid var in
+  Printf.printf "Restr_domain gmot : %s\n" gmot;
+  Printf.printf "******Old domain*********\n";
+  List.iter (fun mot -> Printf.printf "%s " mot) var.domain.liste;
+  Printf.printf "\n\n";
   let longueur = String.length gmot in
   let filtered =
     List.filter
       (fun mot ->
         try
           for j=0 to longueur-1 do
-            if gmot.[j] <> '_' && mot.[j] <> gmot.[j] then raise Exit
+            if gmot.[j] <> '_' && mot.[j] <> gmot.[j] then
+              raise Exit
           done;
           true
         with Exit -> false)
       var.domain.liste in
   let new_dom = Dico_load.create filtered in
+  Printf.printf "******New domain*********\n";
+  List.iter (fun mot -> Printf.printf "%s " mot) new_dom.liste;
+  Printf.printf "\n\n";
   var.domain <- new_dom;;
 
 
@@ -119,35 +127,35 @@ let filtrage = fun (var : Grid.variable) (var_table : Grid.variable array) grid 
 
 
 
-let () =
-  Printf.printf "\n\n *********************** Propagation.ml **********************\n";
-  let dico = Dico_load.dico_array "dico.txt" 2 10 in
-  let grid = Grid.get_grid Sys.argv.(1) in
-  let vars = Grid.get_vars grid dico in
-  let var = vars.(0) in
-  instanciation var grid vars (List.hd var.domain.liste);
-  Array.iter (fun str -> Printf.printf "%s\n" str) grid;
-  Printf.printf "Domaine de la variable : taille = %d\t" var.domain.taille;
-  List.iter (fun str -> Printf.printf "%s\t" str) var.domain.liste;
-  let crossed = var.crossed in
-  List.iter (
-  fun id ->
-    begin
-      Printf.printf "\nVar %d : \t" id;
-      List.iter (fun id -> Printf.printf "%d\t" id) vars.(id).crossed
-    end)
-    crossed;
+(* let () = *)
+(*   Printf.printf "\n\n *********************** Propagation.ml **********************\n"; *)
+(*   let dico = Dico_load.dico_array "dico.txt" 2 10 in *)
+(*   let grid = Grid.get_grid Sys.argv.(1) in *)
+(*   let vars = Grid.get_vars grid dico in *)
+(*   let var = vars.(0) in *)
+(*   instanciation var grid vars (List.hd var.domain.liste); *)
+(*   Array.iter (fun str -> Printf.printf "%s\n" str) grid; *)
+(*   Printf.printf "Domaine de la variable : taille = %d\t" var.domain.taille; *)
+(*   List.iter (fun str -> Printf.printf "%s\t" str) var.domain.liste; *)
+(*   let crossed = var.crossed in *)
+(*   List.iter ( *)
+(*   fun id -> *)
+(*     begin *)
+(*       Printf.printf "\nVar %d : \t" id; *)
+(*       List.iter (fun id -> Printf.printf "%d\t" id) vars.(id).crossed *)
+(*     end) *)
+(*     crossed; *)
   
-  let flag = filtrage var vars grid in
-  Printf.printf "\nfiltrage : %b\n" flag;
-  List.iter (fun id -> Printf.printf "Var %d taille domaine %d\n" id vars.(id).domain.taille) var.crossed;
+(*   let flag = filtrage var vars grid in *)
+(*   Printf.printf "\nfiltrage : %b\n" flag; *)
+(*   List.iter (fun id -> Printf.printf "Var %d taille domaine %d\n" id vars.(id).domain.taille) var.crossed; *)
 
-  let var2 = vars.(1) in
-  instanciation var2 grid vars (List.hd var2.domain.liste);
-  Array.iter (fun str -> Printf.printf "%s\n" str) grid;
-  let flag2 = filtrage var2 vars grid in
-  Printf.printf "\nfiltrage : %b\n" flag2;
-  List.iter (fun id -> Printf.printf "Var %d taille domaine %d\n" id vars.(id).domain.taille) var2.crossed;
-  Printf.printf "\nOn arrive au bout !\n"
+(*   let var2 = vars.(1) in *)
+(*   instanciation var2 grid vars (List.hd var2.domain.liste); *)
+(*   Array.iter (fun str -> Printf.printf "%s\n" str) grid; *)
+(*   let flag2 = filtrage var2 vars grid in *)
+(*   Printf.printf "\nfiltrage : %b\n" flag2; *)
+(*   List.iter (fun id -> Printf.printf "Var %d taille domaine %d\n" id vars.(id).domain.taille) var2.crossed; *)
+(*   Printf.printf "\nOn arrive au bout !\n" *)
   
-;;
+(* ;; *)

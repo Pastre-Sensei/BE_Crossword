@@ -1,5 +1,6 @@
 type nlist = { mutable taille : int; mutable liste : string list; }
 exception Empty
+val copy_domain : nlist -> nlist
 val fprint_domain : out_channel -> nlist -> unit
 val empty : nlist
 val create : string list -> nlist

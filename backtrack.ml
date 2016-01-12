@@ -6,9 +6,15 @@ type state = {
     grid: string array
   };;
 
+(* let copy = fun state -> *)
+(*   Printf.printf "Copy\n"; *)
+(*   {vars = Array.copy state.vars; *)
+(*     grid = Array.copy state.grid};; *)
+
 let copy = fun state ->
   Printf.printf "Copy\n";
-  {vars = Array.copy state.vars;
+  let vars = Array.init (Array.length state.vars) (fun i -> Grid.copy_var state.vars.(i)) in
+  {vars = vars;
     grid = Array.copy state.grid};;
 
 let is_instantiated = fun state ->

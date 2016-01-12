@@ -5,6 +5,11 @@ type word = {
     longueur : int
   };;
 
+let copy_word = fun wd ->
+  {vertical = wd.vertical;
+    ligne_colonne = wd.ligne_colonne;
+    debut = wd.debut;
+    longueur = wd.longueur} 
 
 type variable = {
     id : int;
@@ -13,6 +18,13 @@ type variable = {
     mutable crossed : int list;
     mutable instance : bool};;
 
+let copy_var = fun var -> 
+  {id = var.id;
+    domain = Dico_load.copy_domain var.domain;
+    word = copy_word var.word;
+    crossed =  Array.to_list (Array.copy (Array.of_list var.crossed));
+    instance = var.instance
+  };;
 
 let fic_ouvre_toi = fun file_path ->
   try

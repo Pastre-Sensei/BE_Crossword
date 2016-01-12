@@ -4,6 +4,9 @@ type nlist =
     {mutable taille : int;
       mutable liste : string list};;
 
+let copy_domain = fun dom ->
+  {taille = dom.taille; liste = Array.to_list (Array.copy (Array.of_list dom.liste))}
+
 exception Empty
 
 let fprint_domain = fun ch d -> List.iter (Printf.fprintf ch "%s ") d.liste
