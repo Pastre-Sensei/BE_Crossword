@@ -67,7 +67,7 @@ let convert = fun grid (var : Grid.variable) -> (* Extrait la chaine de caractè
         str := String.concat "" [!str; String.make 1 grid.(ligne).[debut + i]];
       done;
     end;
-  Printf.printf "Chaine : %s\n" !str;
+  (* Printf.printf "Chaine : %s\n" !str; *)
   !str;;
 
 
@@ -76,10 +76,10 @@ let convert = fun grid (var : Grid.variable) -> (* Extrait la chaine de caractè
 
 let restr_domain = fun grid (var : Grid.variable) -> (* Reduit le domaine de la variable parametre par rapport à ce qu'il y a dans la grille *)
   let gmot = convert grid var in
-  Printf.printf "Restr_domain gmot : %s\n" gmot;
-  Printf.printf "******Old domain*********\n";
-  List.iter (fun mot -> Printf.printf "%s " mot) var.domain.liste;
-  Printf.printf "\n\n";
+  (* Printf.printf "Restr_domain gmot : %s\n" gmot; *)
+  (* Printf.printf "******Old domain*********\n"; *)
+  (* List.iter (fun mot -> Printf.printf "%s " mot) var.domain.liste; *)
+  (* Printf.printf "\n\n"; *)
   let longueur = String.length gmot in
   let filtered =
     List.filter
@@ -93,9 +93,9 @@ let restr_domain = fun grid (var : Grid.variable) -> (* Reduit le domaine de la 
         with Exit -> false)
       var.domain.liste in
   let new_dom = Dico_load.create filtered in
-  Printf.printf "******New domain*********\n";
-  List.iter (fun mot -> Printf.printf "%s " mot) new_dom.liste;
-  Printf.printf "\n\n";
+  (* Printf.printf "******New domain*********\n"; *)
+  (* List.iter (fun mot -> Printf.printf "%s " mot) new_dom.liste; *)
+  (* Printf.printf "\n\n"; *)
   var.domain <- new_dom;;
 
 

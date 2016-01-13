@@ -7562,6 +7562,7 @@ apres
 aprete
 apretes
 apriorisme
+apt
 apte
 aptes
 aptitude
@@ -123486,6 +123487,7 @@ thyroidien
 thyroidienne
 thyroidiennes
 thyroidiens
+ti
 tiare
 tiares
 tibetain
@@ -126706,6 +126708,7 @@ trustons
 trusts
 tsar
 tsars
+tsetse
 tsigane
 tsiganes
 tu

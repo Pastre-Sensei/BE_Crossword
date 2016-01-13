@@ -63,12 +63,12 @@ let print_tab_words = fun tab_words ->
   Array.iteri (fun i word -> Printf.printf "Mot no %d : {vertical : %B; ligne_col : %d; debut : %d; longueur : %d}\n" i word.vertical word.ligne_colonne word.debut word.longueur) tab_words;;
 
 
+let min_length = ref max_int;;
+let max_length = ref min_int;;
 
         
 let gen_tab_words = fun matrice -> (* Genere le tableau de mots *)
   Printf.printf "Gen_tab_words appelé\n";
-  let min_length = ref 5 in
-  let max_length = ref 2 in
   let i_length = Array.length matrice -1 in
   let compteur = ref 0 in
   let word_list = ref [] in
@@ -215,14 +215,14 @@ let print_tab_var = fun ch tab_var ->
     tab_var;;
 
 
-let () =
-  (* main *)
-  let gridfile = Sys.argv.(1) in
-  let dico = Dico_load.dico_array "dico.txt" 2 10 in
-  let matrice = get_grid gridfile in
-  let tab_words = gen_tab_words matrice in
-  print_tab_words tab_words;
-  Printf.printf "Fini\n";
-  let tab_var = var_table tab_words dico in
-  print_tab_var stdout tab_var;
-;;
+(* let () = *)
+(*   (\* main *\) *)
+(*   let gridfile = Sys.argv.(1) in *)
+(*   let dico = Dico_load.dico_array "dico.txt" 2 10 in *)
+(*   let matrice = get_grid gridfile in *)
+(*   let tab_words = gen_tab_words matrice in *)
+(*   print_tab_words tab_words; *)
+(*   Printf.printf "Fini\n"; *)
+(*   let tab_var = var_table tab_words dico in *)
+(*   print_tab_var stdout tab_var; *)
+(* ;; *)

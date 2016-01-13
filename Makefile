@@ -1,13 +1,13 @@
 # Custom part
-SOURCES = dico_load.ml grid.ml propagation.ml backtrack.ml
+SOURCES = dico_load.ml grid.ml propagation.ml bt_v2.ml
 #LIBS =
 TARGET = bt.out
 
 # Generic part
-OCAMLC   = ocamlc -g
+OCAMLC   = ocamlopt -g
 OCAMLDEP = ocamldep
 
-OBJS = $(SOURCES:.ml=.cmo)
+OBJS = $(SOURCES:.ml=.cmx)
 
 all: .depend byte
 byte: $(TARGET)
@@ -20,7 +20,7 @@ $(TARGET): $(OBJS)
 %.cmi: %.mli
 	$(OCAMLC) $<
 
-%.cmo: %.ml
+%.cmx: %.ml
 	$(OCAMLC) -c $<
 
 .PHONY: clean
